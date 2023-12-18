@@ -10,7 +10,8 @@ import InPageNavigation from "../components/inpage-navigation.component";
 import PromptCard from "../components/prompt-post.component.jsx";
 import LoadMoreData from "../components/load-more.component.jsx";
 import NoData from "../components/nodata.component.jsx";
-import PageNotFound from "../pages/404.page.jsx"
+import PageNotFound from "../pages/404.page.jsx";
+import { toast, Toaster } from 'react-hot-toast';
 
 const profileStructure = {
     personal_info : {
@@ -50,6 +51,7 @@ const ProfilePage = () => {
             setProfileLoaded(profileId);
             setLoading(false);
         } catch (error) {
+            toast.error("Something went wrong 😕");
             console.error(error);
         }
     };
@@ -74,6 +76,7 @@ const ProfilePage = () => {
             setPrompts(formatedData);
 
         } catch (error) {
+            toast.error("Something went wrong 😕");
             console.error(error);
         }
     }
@@ -99,6 +102,7 @@ const ProfilePage = () => {
 
     return (
         <AnimationWrapper>
+            <Toaster/>
             {
                 loading ? <Loader/>
                 :

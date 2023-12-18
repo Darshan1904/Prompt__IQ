@@ -1,5 +1,7 @@
 import Prompt from '../models/Prompt.model.js';
 import User from '../models/User.model.js';
+import Notification from '../models/Notification.model.js';
+import Comment from '../models/Comment.model.js';
 import { nanoid } from 'nanoid';
 
 export const fetchPrompts = async (req, res) => {
@@ -79,12 +81,12 @@ export const fetchTrendingPrompts = async (req, res) => {
 }
 
 export const searchPrompts = async (req, res) => {
-    let { query, tag, author, page } = req.body;
+    let { query, tag, author, page, limit, eliminatePrompt } = req.body;
 
     let findQuery;
 
     if(tag){
-        findQuery = { tags: tag, draft: false };
+        findQuery = { tags: tag, draft: false, prompt_id: { $ne: eliminatePrompt} };
     }
     else if(query){
         findQuery = { title: new RegExp(query, 'i') , draft: false };
@@ -93,7 +95,7 @@ export const searchPrompts = async (req, res) => {
         findQuery = { author, draft: false}
     }
 
-    let maxLimit = 5;
+    let maxLimit = limit ? limit : 5;
 
     try {
         let prompts = await Prompt.find(findQuery)
@@ -132,7 +134,7 @@ export const searchUsers = async (req,res)=>{
 export const promptPost = async (req, res) => {
     let authorId = req.user._id;
 
-    let { title, content, des, tags, draft} =  req.body;
+    let { title, content, des, tags, draft, promptId} =  req.body;
 
     if(!title.length){
         res.status(403).send({
@@ -140,15 +142,9 @@ export const promptPost = async (req, res) => {
         });
     }
 
-    if(!content.blocks.length){
+    if(!des.length){
         res.status(403).send({
-            err: "Content is required."
-        });
-    }
-
-    if(!des.length || des.length > 5000){
-        res.status(403).send({
-            err: "Description is required and should be less than 5000 characters."
+            err: "Description is required."
         });
     }
 
@@ -160,44 +156,169 @@ export const promptPost = async (req, res) => {
 
     tags = tags.map(tag => tag.toLowerCase());
 
-    let prompt_id = title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+    let prompt_id = promptId || title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
 
-    let prompt = new Prompt({
-        title, content, des, tags, author: authorId, prompt_id, draft: Boolean(draft)
-    });
+    if(promptId){
 
-    await prompt.save().then(prompt => {
-        let icrementVal = draft ? 0 : 1;
-
-        User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": icrementVal}, $push: {"prompts": prompt._id}}).then(user => {
-                res.status(200).send({
-                    id : prompt.prompt_id
-                });
-            }).catch(err => {
-                res.status(500).send({
-                    err: err.message
-                });
+        await Prompt.findOneAndUpdate({ "prompt_id" : promptId.promptId }, { title, content, des, tags, draft: Boolean(draft) }, { new: true })
+        .then(prompt => {
+            res.status(200).send({
+                id : prompt.prompt_id
             });
         }).catch(err => {
             res.status(500).send({
                 err: err.message
+            });
+        });
+
+    }else{
+        let prompt = new Prompt({
+            title, content, des, tags, author: authorId, prompt_id, draft: Boolean(draft)
+        });
+    
+        await prompt.save().then(prompt => {
+            let icrementVal = draft ? 0 : 1;
+    
+            User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": icrementVal}, $push: {"prompts": prompt._id}}).then(user => {
+                    res.status(200).send({
+                        id : prompt.prompt_id
+                    });
+                }).catch(err => {
+                    res.status(500).send({
+                        err: err.message
+                    });
+                });
+            }).catch(err => {
+                res.status(500).send({
+                    err: err.message
+            });
+        });
+    }
+}
+
+export const getPrompt = async (req, res) => {
+    const { promptId, draft, mode } = req.body;
+    const incrementVal = mode != 'edit' ? 1 : 0;
+    
+    try {
+        const prompt = await Prompt.findOneAndUpdate({ "prompt_id" : promptId }, { $inc: {"activit.total_reads": incrementVal}})
+        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname')
+        .select("title des content banner activity publishedAt prompt_id tags");
+
+        await User.findOneAndUpdate({"personal_info.username" : prompt.author.personal_info.username}, { $inc : {"account_info.total_reads": incrementVal}});
+
+        if(prompt.draft && !draft){
+            return res.status(500).json({error: "You can not access draft prompt."})
+        }
+
+        res.status(200).send({prompt});
+    } catch (error) {
+        res.status(500).send({error : error.message});
+        console.log(error)
+    }
+}
+
+export const likePrompt = async (req, res) => {
+    const { promptId, isLikedByUser } = req.body;
+    const userId = req.user._id;
+
+    let incrementVal = !isLikedByUser ? 1 : -1;
+
+    Prompt.findOneAndUpdate({_id: promptId}, {$inc: {"activity.total_likes": incrementVal}}).then(prompt => {
+        if(!isLikedByUser){
+            let like = new Notification({
+                type: "like",
+                prompt: promptId,
+                notification_for: prompt.author,
+                user: userId
+            });
+
+            like.save().then(() => {
+                res.status(200).send({likedByUser: !isLikedByUser});
+            });
+        }
+        else{
+
+            Notification.findOneAndDelete({type: "like", prompt: promptId, user: userId}).then(()=>{
+                res.status(200).send({likedByUser: !isLikedByUser});
+            })
+
+        }
+    }).catch(err => {
+        res.status(500).send({
+            err: err.message
         });
     });
 }
 
-export const getPrompt = async (req, res) => {
-    const { id } = req.body;
-    const incrementVal = 1;
+export const islikedByUser = (req, res) => {
+    const userId = req.user._id;
+    const { promptId } = req.body;
 
-    try {
-        const prompt = await Prompt.findOneAndUpdate({ "prompt_id" : id }, { $icn : {"activit.total_reads": incrementVal}})
-        .populate("author", "personal_info.fullname", "personal_info.usename personal_info.profile_img")
-        .select("title des content banner activity publishedAt prompt_id tags");
+    Notification.exists({type: "like", prompt: promptId, user: userId}).then(result => {
+        if(result){
+            res.status(200).send({likedByUser: true});
+        }
+        else{
+            res.status(200).send({likedByUser: false});
+        }
+    }).catch(err => {
+        res.status(500).send({
+            err: err.message
+        });
+    });
+}
 
-        await User.findOneAndUpdate({"personal_info.username" : prompt.author.personla_info.username}, { $inc : {"account_info.total_reads": incrementVal}});
+export const addComment = (req, res) => {
+    const userId = req.user._id;
+    const { _id, comment, promptAuthor } = req.body;
 
-        res.status(200).send({prompt});
-    } catch (error) {
-        res.staus(500).send({error : err.message});
+    if(!comment.length){
+        res.status(403).send({error: "Write something to leave a comment..."})
     }
+
+    let commentObj = new Comment({
+        prompt_id : _id,
+        prompt_author: promptAuthor,
+        comment,
+        commented_by: userId
+    });
+
+    commentObj.save().then(commentFile => {
+        let { comment, commentedAt, children } = commentFile;
+
+        Prompt.findOneAndUpdate({_id}, { $push: { "comments" : commentFile._id }, $inc: {"activity.total_comments": 1}, "activity.total_parent_comments": 1 })
+        .then(prompt => {
+            let notification = new Notification({
+                type: "comment",
+                prompt: _id,
+                notification_for: promptAuthor,
+                user: userId,
+                comment: commentFile._id
+            });
+
+            notification.save().then(notify => res.status(200).send({comment, commentedAt, _id: commentFile._id, children}));
+        }).catch(error => {
+            res.status(500).send({ error: error.message });
+        });
+    })
+
+}
+
+export const getComments = (req, res) => {
+    const { promptId, skip } = req.body;
+
+    const maxLimit = 5;
+
+    Comment.find({ prompt_id: promptId, isReply: false }).populate('commented_by', 'personal_info.profile_img personal_info.username personal_info.fullname')
+    .skip(skip)
+    .limit(maxLimit)
+    .sort({
+        commentedAt: -1
+    })
+    .then(comments => {
+        res.status(200).send({comments});
+    }).catch(error => {
+        res.status(500).send({ error: error.message });
+    });
 }

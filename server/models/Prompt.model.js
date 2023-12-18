@@ -17,7 +17,6 @@ const promptSchema = mongoose.Schema({
     },
     des: {
         type: String,
-        maxlength: 200,
         // required: true
     },
     content: {

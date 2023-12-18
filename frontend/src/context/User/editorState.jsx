@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const EditorState = (props) => {
 
-    const blogStructure = {
+    const promptStructure = {
         title: "",
         content: [],
         tags: [],
@@ -11,12 +11,12 @@ const EditorState = (props) => {
         author: {personal_info : {}}
     }
 
-    const [blog, setBlog] = useState(blogStructure);
+    const [prompt, setPrompt] = useState(promptStructure);
     const [editroState, setEditorState] = useState("editor");
     const [textEditor, setTextEditor] = useState({isReady: false});
 
     return (
-        <EditorContext.Provider value={{blog, setBlog, editroState, setEditorState, textEditor, setTextEditor}}>
+        <EditorContext.Provider value={{prompt, setPrompt, editroState, setEditorState, textEditor, setTextEditor}}>
             {props.children}
         </EditorContext.Provider>
     );
