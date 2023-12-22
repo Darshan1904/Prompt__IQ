@@ -6,7 +6,7 @@ import { Toaster, toast } from "react-hot-toast";
 import axios from "../axios.js";
 
 const PromptInteraction = () => {
-    let { prompt, prompt: { _id, title, prompt_id, activity, activity: { total_likes, total_comments }, author: { personal_info: { username: author_username }}}, setPrompt, isLikedByUser, setLikedByUser, setShowComment } = useContext(PromptContext);
+    let { prompt, prompt: { _id, title, des, prompt_id, activity, activity: { total_likes, total_comments }, author: { personal_info: { username: author_username }}}, setPrompt, isLikedByUser, setLikedByUser, setShowComment } = useContext(PromptContext);
 
     const { userAuth: { username, authToken } } = useContext(UserContext);
 
@@ -31,7 +31,6 @@ const PromptInteraction = () => {
 
             !isLikedByUser ? total_likes++ : total_likes--;
 
-            console.log(total_likes);
             setPrompt({...prompt, activity: {...activity, total_likes} });
 
             try {
@@ -39,7 +38,6 @@ const PromptInteraction = () => {
                     'authorization' : `Bearer ${authToken}`
                 }});
 
-                console.log(result);
             } catch (error) {
                 console.log(error);
             }
@@ -63,7 +61,6 @@ const PromptInteraction = () => {
                             </button>
                             <p className="text-xl text-dark-grey">{total_likes}</p>
                        
-                        
                             <button 
                                 className="w-10 h-10 rounded-full flex items-center justify-center bg-grey/80" 
 
@@ -72,6 +69,13 @@ const PromptInteraction = () => {
                                 <i className="fi fi-rr-comment-dots"></i>
                             </button>
                             <p className="text-xl text-dark-grey">{total_comments}</p>
+
+                            <button className="w-10 h-10 rounded-full flex items-center justify-center bg-grey/80" onClick={() => {
+                                navigator.clipboard.writeText(des); 
+                                toast.success("Copied to clipboard")
+                            }}>
+                                <i className='fi fi-rr-copy'/> 
+                            </button>
                        
                     </div>
 

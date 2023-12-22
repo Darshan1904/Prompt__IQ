@@ -119,6 +119,33 @@
     max-width: 900px;
 }
 
+.msgs::-webkit-scrollbar {
+    width: 0; 
+  }
+  
+  .msgs::-webkit-scrollbar-thumb {
+    background-color: transparent; 
+  }
+  
+  .msgs::-webkit-scrollbar-track {
+    background-color: transparent; 
+  }
+  
+  @layer utilities {
+    @variants responsive {
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+  
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+    }
+  }
+
 .cdx-settings-button[data-tune='withBorder'],
 .cdx-settings-button[data-tune='withBackground'],
 .cdx-settings-button[data-tune='stretched'] {

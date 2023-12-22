@@ -36,7 +36,7 @@ const PromptEditor = () => {
 
     const publish = async () => {
 
-        if (title.length === 0) {
+        if (newTitle.length === 0) {
             toast.error("Write a Prompt Titel to publish.");
             return;
         }
@@ -55,7 +55,7 @@ const PromptEditor = () => {
             return;
         }
 
-        if(!title.length){
+        if(!newTitle.length){
             toast.error("Title is required.");
         }
 
@@ -98,7 +98,7 @@ const PromptEditor = () => {
                     <img src={logo}></img>
                 </Link>
                 <p className="max-md:hidden text-black line-clamp-1 w-full">
-                    {title.length === 0 ? "New Prompt" : newTitle}
+                    {newTitle.length === 0 ? "New Prompt" : newTitle}
                 </p>
 
                 <div className="flex gap-4 ml-auto">

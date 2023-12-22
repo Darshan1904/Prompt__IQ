@@ -93,8 +93,7 @@ const userSchema = mongoose.Schema({
 })
 
 userSchema.pre("save", async function(next) {
-    if(!this.isModified("personal_info.password")) return next();
-
+    if(!this.isModified("personal_info.password") || !this.personal_info.password) return next();
     this.personal_info.password = await bcrypt.hash(this.personal_info.password, 12);
     next();
 });
@@ -114,6 +113,11 @@ userSchema.methods.generateAuthToken = function() {
 
 userSchema.methods.comparePassword = async function(candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.personal_info.password);
+}
+
+userSchema.methods.updatePassword = async function(newPassword) {
+    this.personal_info.password = newPassword;
+    return await this.save();
 }
 
 const User = mongoose.model("users", userSchema);

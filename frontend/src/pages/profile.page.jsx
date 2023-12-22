@@ -13,7 +13,7 @@ import NoData from "../components/nodata.component.jsx";
 import PageNotFound from "../pages/404.page.jsx";
 import { toast, Toaster } from 'react-hot-toast';
 
-const profileStructure = {
+export const profileStructure = {
     personal_info : {
         fullname: "",
         username: "",

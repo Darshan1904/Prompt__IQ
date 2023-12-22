@@ -105,10 +105,9 @@ export const signIn = async (req, res) => {
 }
 
 export const googleAuth = async (req, res) => {
-    let {authToke} = req.body;
-    console.log(authToke);
+    let {authToken} = req.body;
 
-    getAuth().verifyIdToken(authToke)
+    getAuth().verifyIdToken(authToken)
     .then(async (decodedToken) => {
         let {email, name, picture} = decodedToken;
 
@@ -116,7 +115,7 @@ export const googleAuth = async (req, res) => {
 
         let user = await User.findOne({"personal_info.email": email}).select("personal_info.profile_img personal_info.username personal_info.fullname google_auth")
         .catch((err) => {
-            res.status(500).send({error: "Something went wrong"});
+            return res.status(500).send({error: "Something went wrong"});
         });
 
         if(!user) {
@@ -138,18 +137,52 @@ export const googleAuth = async (req, res) => {
                 user = u;
             })
             .catch((err) => {
-                res.status(500).send({error: "Something went wrong"});
+                return res.status(500).send({error: "Something went wrong"});
             });
         }
         else{
             if(!user.google_auth){
-                res.status(403).send({error: "Email is already registered"});
+                return res.status(403).send({error: "Email is already registered"});
             }
         }
 
-        res.status(200).send(await formateDataToSend(user));
+        return res.status(200).send(await formateDataToSend(user));
     })
     .catch((err) => {
-        res.status(500).send({error: "Authentication failed!! Try using another email"});
+        return res.status(500).send({error: "Authentication failed!! Try using another email"});
     });
+}
+
+export const changePassword = async (req, res) => {
+    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    const { currentPassword, newPassword } = req.body;
+    const _id = req.user._id;
+
+    if(!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)){
+        return res.status(403).send({error: "Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters."})
+    }
+
+    try {
+
+        const user = await User.findOne({_id});
+
+        if(!user){
+            return res.status(500).send({error:"User not found"});
+        }
+
+        if(user.google_auth){
+            return res.status(403).send({error: "Account is registered with google. You can not change password"});
+        }
+
+        if(!await user.comparePassword(currentPassword)){
+            return res.status(403).send({error: "Current password is incorrect"});
+        }
+
+        await user.updatePassword(newPassword);
+
+        return res.status(200).send({message: "Password changed successfully"});
+        
+    } catch (error) {
+        return res.status(500).send({error: "Something went wrong while changing the password."});
+    }    
 }

@@ -4,7 +4,7 @@ import UserContext from "../context/User/userContext";
 import axios from "../axios.js";
 import PromptContext from "../context/User/promptContext.jsx";
 
-const CommentField = ({action}) => {
+const CommentField = ({action, index=undefined, replyingTo=undefined, setReplying}) => {
 
     const [comment, setComment] = useState("");
     const { userAuth: { username, authToken, fullname, profile_img } } = useContext(UserContext);
@@ -23,7 +23,7 @@ const CommentField = ({action}) => {
         }
 
         try {
-            const result = await axios.post("/prompt/addComment", {_id, promptAuthor, comment}, {
+            const result = await axios.post("/prompt/addComment", {_id, promptAuthor, comment, replying_to: replyingTo}, {
                 headers: {
                     'authorization': `Bearer ${authToken}`
                 }
@@ -34,13 +34,29 @@ const CommentField = ({action}) => {
 
             let newCommentArr;
 
-            result.data.childrenLevel = 0;
+            if(replyingTo){
+                commentsArr[index].children.push(result.data._id);
 
-            newCommentArr = [ result.data, ...commentsArr.comments ];
+                result.data.childrenLevel = commentsArr[index].childrenLevel + 1;
 
-            setPrompt({...prompt, comment:{ result : { comments : newCommentArr } }, activity:{...activity, total_comments: total_comments+1, total_parent_comments: total_parent_comments+1}});
+                result.data.parentIndex = index;
 
-            setTotalParentCommentLoaded(prevVal => prevVal + 1);
+                commentsArr[index].isReplyLoaded = true;
+                commentsArr.splice(index+1, 0, result.data);
+
+                newCommentArr = commentsArr;
+                setReplying(prevVal => !prevVal);
+            }
+            else{
+                result.data.childrenLevel = 0;
+                newCommentArr = [ result.data, ...commentsArr ];
+            }
+    
+            let parentCommentIncrementval = replyingTo ? 0 : 1;
+
+            setPrompt({...prompt, comment:{ result : newCommentArr }, activity:{...activity, total_comments: total_comments+1, total_parent_comments: total_parent_comments+parentCommentIncrementval}});
+    
+            setTotalParentCommentLoaded(prevVal => prevVal + parentCommentIncrementval);
 
         } catch (error) {
             toast.error("Something went wrong!!");
@@ -52,7 +68,7 @@ const CommentField = ({action}) => {
     return (
         <>
             <Toaster />
-            <textarea value={comment} placeholder="Leave a comment..." className="input-box pl-5 placeholder:text-dark-grey resize-none h-[150px] overflow-auto" onChange={(e) => setComment(e.target.value)}></textarea>
+            <textarea value={comment} placeholder={`Leave a ${action}..` }className="input-box pl-5 placeholder:text-dark-grey resize-none h-[150px] overflow-auto" onChange={(e) => setComment(e.target.value)}></textarea>
 
             <button className="btn-dark mt-5 px-10" onClick={handleComment}>{action}</button>
         </>

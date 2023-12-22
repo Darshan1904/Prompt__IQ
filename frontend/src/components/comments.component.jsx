@@ -14,13 +14,13 @@ export const fetchComments = async ({skip = 0, promptId, setParentCommentCountFu
             comment.childrenLevel = 0;
         });
 
-        setParentCommentCountFun(prevVal => prevVal + data.length);
+        setParentCommentCountFun(prevVal => prevVal + data.comments.length);
 
         if(commentArray == null){
-            res = { result : data};
+            res = { result : data.comments};
         }
         else{
-            res = { results : [...commentArray, ...data]};
+            res = { result : [...commentArray, ...data.comments]};
         }
     });
 
@@ -29,7 +29,13 @@ export const fetchComments = async ({skip = 0, promptId, setParentCommentCountFu
 
 const CommentsContainer = () => {
 
-    let { prompt: {title, comment: {result: commentsArr}}, showComment, setShowComment } = useContext(PromptContext);
+    let {prompt,  prompt: {_id, title, comment: {result: commentsArr}, activity: { total_parent_comments }}, setPrompt, showComment, setShowComment, totalParentCommentLoaded, setTotalParentCommentLoaded } = useContext(PromptContext);
+
+    const loadMoreComments = async () => {
+        let newCommetnsArr = await fetchComments({skip: totalParentCommentLoaded, promptId: _id, setParentCommentCountFun: setTotalParentCommentLoaded, commentArray: commentsArr});
+
+        setPrompt({...prompt, comment: newCommetnsArr});
+    }
 
     return (
         <div className={"max-sm:w-full fixed " + ( showComment ? "top-0 sm:right-0" : "top-[100%] sm:right-[-100%]") + " duration-700 max-sm:right-0 sm:top-0 w-[30%] min-w-[350px] h-full z-50 bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden"}>
@@ -47,15 +53,21 @@ const CommentsContainer = () => {
                 <CommentField action="Comment" />
 
                 {
-                    commentsArr.comments && commentsArr.comments.length ?
-
-                    commentsArr.comments.map((comment, i) => {
+                    commentsArr && commentsArr.length ?
+                    commentsArr.map((comment, i) => {
                         return <AnimationWrapper key={i}>
                             <CommentCard index={i} leftVal={comment.childrenLevel*4} commentData={comment} />
                         </AnimationWrapper>
                     })
                     :
                     <NoData message="No Comments" />
+                }
+
+                {
+                    total_parent_comments > totalParentCommentLoaded ? 
+                    <button className="text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2" onClick={loadMoreComments}>Load More</button>
+                    :
+                    null
                 }
             </div>
 

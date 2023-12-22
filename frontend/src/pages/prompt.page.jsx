@@ -26,7 +26,7 @@ const PromptPage = () => {
             const prompt = result.data.prompt;
 
             prompt.comment = await fetchComments({promptId: prompt._id, setParentCommentCountFun: setTotalParentCommentLoaded})
-           
+
             setPrompt(prompt);
             const similarResult = await axios.post('prompt/searchPrompts', {tag: prompt.tags[0], limit: 6, eliminatePrompt: promptId});
 
@@ -34,7 +34,6 @@ const PromptPage = () => {
             setLoading(false);
         } catch (error) {
             toast.error("Something went wrong 😕");
-            console.log(error);
             setLoading(false);
         }
     }

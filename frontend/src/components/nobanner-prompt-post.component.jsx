@@ -3,10 +3,10 @@ import {formatDate} from "../common/date";
 
 const MinimalPromptPost = ({ prompt, index }) => {
     
-    let { title, blog_id: id, author: { personal_info: { fullname, username, profile_img } }, publishedAt } = prompt;
+    let { title, prompt_id: id, author: { personal_info: { fullname, username, profile_img } }, publishedAt } = prompt;
 
     return (
-        <Link to={`/blog/${id}`} className="flex gap-5 mb-8">
+        <Link to={`/prompts/:${id}`} className="flex gap-5 mb-8">
             <h1 className="blog-index">{index < 10 ? "0" + (index+1) : index+1}</h1>
             <div>
                 <div className="flex gap-2 items-center mb-3">

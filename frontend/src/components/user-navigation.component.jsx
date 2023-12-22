@@ -29,8 +29,8 @@ const UserNavigationPannel = () => {
                     Profile
                 </Link>
 
-                <Link to={`/dashboard/blogs`} className="link pl-8 py-4">
-                    Dashboard
+                <Link to={`/testPrompt`} className="link pl-8 py-4">
+                    Test Prompts
                 </Link>
 
                 <Link to={`/settings/editProfile`} className="link pl-8 py-4">

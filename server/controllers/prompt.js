@@ -271,33 +271,47 @@ export const islikedByUser = (req, res) => {
 
 export const addComment = (req, res) => {
     const userId = req.user._id;
-    const { _id, comment, promptAuthor } = req.body;
+    const { _id, comment, promptAuthor, replying_to } = req.body;
 
     if(!comment.length){
         res.status(403).send({error: "Write something to leave a comment..."})
     }
 
-    let commentObj = new Comment({
+    let commentObj = {
         prompt_id : _id,
         prompt_author: promptAuthor,
         comment,
         commented_by: userId
-    });
+    };
 
-    commentObj.save().then(commentFile => {
+    if(replying_to){
+        commentObj.parent = replying_to;
+        commentObj.isReply = true;
+    }
+
+    new Comment(commentObj).save().then(commentFile => {
         let { comment, commentedAt, children } = commentFile;
 
-        Prompt.findOneAndUpdate({_id}, { $push: { "comments" : commentFile._id }, $inc: {"activity.total_comments": 1}, "activity.total_parent_comments": 1 })
-        .then(prompt => {
-            let notification = new Notification({
-                type: "comment",
+        Prompt.findOneAndUpdate({_id}, { $push: { "comments" : commentFile._id }, $inc: {"activity.total_comments": 1, "activity.total_parent_comments": replying_to ? 0 : 1 }})
+        .then(async prompt => {
+            let notification = {
+                type: replying_to ? "reply" : "comment",
                 prompt: _id,
                 notification_for: promptAuthor,
                 user: userId,
                 comment: commentFile._id
-            });
+            };
 
-            notification.save().then(notify => res.status(200).send({comment, commentedAt, _id: commentFile._id, children}));
+            if(replying_to){
+                notification.replied_on_comment = replying_to;
+
+                await Comment.findOneAndUpdate({_id: replying_to}, {$push: {children: commentFile._id}}).then(replyingToCommentDoc => {
+                    {notification.notification_for = replyingToCommentDoc.commented_by}
+                });
+
+            }
+
+            new Notification(notification).save().then(notify => res.status(200).send({comment, commentedAt, _id: commentFile._id, children}));
         }).catch(error => {
             res.status(500).send({ error: error.message });
         });
@@ -321,4 +335,67 @@ export const getComments = (req, res) => {
     }).catch(error => {
         res.status(500).send({ error: error.message });
     });
+}
+
+export const getReplies = (req, res) => {
+    const { _id, skip } = req.body;
+
+    const maxLimit = 5;
+
+    Comment.findOne({ _id })
+    .populate({
+        path: "children",
+        option:{
+            skip: skip,
+            limit: maxLimit,
+            sort: { 'commentedAt' : -1 }
+        },
+        populate: {
+            path: 'commented_by',
+            select: 'personal_info.profile_img personal_info.username personal_info.fullname'
+        },
+        select: "-prompt_id -updatedAt"
+    })
+    .select("children")
+    .then(doc => {
+        res.status(200).send({replies : doc.children});
+    }).catch(error => {
+        res.status(500).send({ error: error.message });
+    });
+}
+
+const deleteCommentFunc = async (comment) => {
+    if(comment.parent){
+        await Comment.findOneAndUpdate({_id: comment.parent}, {$pull : {children: comment._id}});
+    }    
+        
+    await Comment.findOneAndDelete({_id: comment._id});
+    await Notification.findOneAndDelete({comment: comment._id});
+    await Notification.findOneAndDelete({reply: comment._id});
+
+    await Prompt.findOneAndUpdate({_id: comment.prompt_id}, {$pull: {comments: comment._id}, $inc: {"activity.total_comments": -1,  "activity.total_parent_comments": comment.parent? 0 : -1 }}).then(async prompt => {
+        if(comment.children.length){
+            comment.children.map(async replies => {
+                replies = await Comment.findOne({_id:replies});
+                deleteCommentFunc(replies);
+            })
+        }
+    })
+}
+
+export const deleteComment = (req, res) => {
+    const userId = req.user._id;
+    const { _id } = req.body;
+
+    Comment.findOneAndDelete({_id})
+    .then(async comment => {
+        if(comment.commented_by == userId){
+            deleteCommentFunc(comment);
+
+            res.status(200).send({msg:"Comment deleted"});
+        }
+        else{
+            res.status(403).send({error: "You are not authorized to delete this comment."});
+        }
+    })
 }
