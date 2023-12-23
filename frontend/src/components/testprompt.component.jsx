@@ -11,21 +11,20 @@ const TestPrompt = () => {
   const scrollRef = useRef(null);
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
+  const [finishedTyping, setFinishedTyping] = useState(false);
   const [messages, setMessages] = useState([{
     "role" : "bot",
     "content" : "How can I help you today?"
   }]);
 
   const { userAuth: { authToken } } = useContext(UserContext);
-
   useEffect(()=>{
     if(authToken == null){
       navigate('/signin');
     }
 
-    scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight + 200);
-    console.log(scrollRef.current.scrollHeight+200)
-  }, [messages]);
+    scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
+  }, [messages, finishedTyping]);
 
   const handleSubmit = async (msg)=>{
     const message = msg.target[0].value;
@@ -37,6 +36,7 @@ const TestPrompt = () => {
     const newMessages = [...messages, question];
     setMessages(newMessages);
 
+    setFinishedTyping(false);
     const url = import.meta.env.VITE_APP_API_URL;
     const options = {
       method: 'POST',
@@ -45,13 +45,20 @@ const TestPrompt = () => {
         'X-RapidAPI-Key': import.meta.env.VITE_APP_API_KEY,
         'X-RapidAPI-Host': import.meta.env.VITE_APP_API_HOST
       },
-      body: JSON.stringify([
+      body: JSON.stringify({
+        messages: [
+          ...messages,
           {
             role: 'user',
             content: `${prompt}`
           }
-        ]
-      )
+        ],
+        system_prompt: "",
+        temperature: 0.5,
+        top_k: 50,
+        top_p: 0.9,
+        web_access: false
+      })
     };
     
     try {
@@ -61,10 +68,11 @@ const TestPrompt = () => {
       result = JSON.parse(result);
       const ans = {
         "role" : "bot",
-        "content" : result.text
+        "content" : result.result
       }
       setLoading(false);
       setMessages((prevmessages)=>[...prevmessages, ans]);
+
     } catch (error) {
         setLoading(false);
         toast.error("Something went wrong!");
@@ -83,16 +91,16 @@ const TestPrompt = () => {
               <div className='rounded-full absolute px-3 pt-2 bg-grey'><i className='fi fi-rr-bulb text-3xl'/></div>
               <div className='text-black font-mono sm:text-lg text-xl ml-16'>
                 <p className="font-bold text-xl">Prompt GPT</p>
-                <Typewriter
-                    options={{
-                      delay: 25,
-                    }}
-                    onInit={(typewriter) => {
-                        typewriter
-                        .typeString(msg.content)
-                        .start();
-                    }}
-                />
+                  <Typewriter
+                      options={{
+                        delay: 10,
+                      }}
+                      onInit={(typewriter) => {
+                          typewriter
+                          .typeString(msg.content)
+                          .start()
+                      }}
+                  />
               </div>
             </div>
             :
