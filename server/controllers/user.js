@@ -1,17 +1,22 @@
 import User from '../models/User.model.js';
 
-export const getProfile = async (req,res) => {
+export const getProfile = async (req, res) => {
     try {
-        const {username} = req.body;
-    
-        const user = await User.findOne({ "personal_info.username": username })
-                         .select("-personal_info.password -google_auth -updatedAt -prompts");
-    
-        return res.status(200).send(user); 
+      const { username } = req.query;
+  
+      const user = await User.findOne({ 'personal_info.username': username })
+        .select('-personal_info.password -google_auth -updatedAt -prompts');
+  
+      if (!user) {
+        return res.status(404).send({ error: 'User not found' });
+      }
+  
+      return res.status(200).send(user);
     } catch (error) {
-        return res.status(500).send({error : error.message});
+      return res.status(500).send({ error: error.message });
     }
-}
+  };
+  
 
 export const updateProfile = async (req, res) => {
 

@@ -42,21 +42,25 @@ const ProfilePage = () => {
     const { userAuth : { username } } = useContext(UserContex);
 
     const fetchUserProfile = async () => {
-        try {    
-            const result = await axios.post('/user/getProfile', {username: profileId});
-            if(result.data !== ""){
-                setProfile(result.data);
-            }
-            getPrompts({user_id: result.data._id});
-            setProfileLoaded(profileId);
-            setLoading(false);
+        try {
+          const result = await axios.get('/user/getProfile', {
+            params: { username: profileId },
+          });
+      
+          if (result.data !== "") {
+            setProfile(result.data);
+          }
+      
+          getPrompts({ user_id: result.data._id });
+          setProfileLoaded(profileId);
+          setLoading(false);
         } catch (error) {
-            toast.error("Something went wrong 😕");
-            console.error(error);
+          toast.error("Something went wrong 😕");
+          console.error(error);
         }
-    };
+      };
 
-    const getPrompts = async ({page = 1, user_id}) => {
+    const getPrompts = async ({page = 1, user_id, createNewArray = true}) => {
 
         user_id = user_id === undefined ? prompts.user_id : user_id;
 
@@ -64,6 +68,7 @@ const ProfilePage = () => {
             const result = await axios.post('/prompt/searchPrompts', {author: user_id, page});
 
             let formatedData = await filterPaginationData({
+                createNewArray: createNewArray,
                 state: prompts,
                 data: result.data.prompts,
                 page,
@@ -72,7 +77,6 @@ const ProfilePage = () => {
             });
 
             formatedData.user_id = user_id;
-
             setPrompts(formatedData);
 
         } catch (error) {
@@ -91,6 +95,8 @@ const ProfilePage = () => {
 
         if(profileLoaded !== profileId){
             setPrompts(null);
+            resetState();
+            fetchUserProfile();
         };
 
         if(prompts == null){

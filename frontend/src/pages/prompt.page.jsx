@@ -63,7 +63,7 @@ const PromptPage = () => {
                     <div className="mt-6">
                         <h2>{title}</h2>
 
-                        <div className="my-12 font-gelasio blog-page-content">
+                        <div className="my-12 font-gelasio blog-page-content text-justify">
                             {des}
                         </div>
 

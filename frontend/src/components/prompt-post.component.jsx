@@ -17,7 +17,7 @@ const PromptCard = ({prompt, author}) => {
 
                 <h1 className="blog-title">{title}</h1>
 
-                <p className="my-3 text-xl font-gelasio leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-2">{des}</p>
+                <p className="my-3 text-xl font-gelasio leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-2 text-justify">{des}</p>
 
                 <div className="mt-7 flex gap-4">
                     <span className="btn-light py-1 px-4">{tags[0]}</span>

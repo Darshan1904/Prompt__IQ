@@ -74,7 +74,9 @@ const EditProfile = () => {
 
         if(authToken){
    
-            axios.post('/user/getProfile', {username})
+            axios.get('/user/getProfile', {
+                params: { username },
+            })
             .then(({data})=>{
                 setProfile(data);
                 setLoading(false);
