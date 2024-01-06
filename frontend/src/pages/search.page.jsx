@@ -37,13 +37,16 @@ const SearchPage = () => {
 
     const searchUsers = async () => {
         try {
-            let res = await axios.post("/prompt/searchUsers", {query});
-            setUsers(res.data.users);
+          const res = await axios.get('/prompt/searchUsers', {
+            params: { query },
+          });
+          setUsers(res.data.users);
         } catch (error) {
-            console.log(error);
-            toast.error("Something went wrong 😕!");
+          console.log(error);
+          toast.error("Something went wrong 😕!");
         }
-    }
+    };
+      
 
     const resetState = () => {
         setPrompts(null);

@@ -4,19 +4,19 @@ import fetchUser from '../middlewares/fetchUser.js';
 
 const promptRouter = Router();
 
-promptRouter.post('/latestPrompts', fetchPrompts);
+promptRouter.get('/latestPrompts', fetchPrompts);
 promptRouter.get('/trendingPrompts', fetchTrendingPrompts);
 promptRouter.post('/searchPrompts', searchPrompts);
 promptRouter.post('/post', fetchUser, promptPost);
-promptRouter.post('/promptsCounte', getCount);
+promptRouter.get('/promptsCounte', getCount);
 promptRouter.post('/searchPromptsCounte', getSearchCount);
-promptRouter.post('/searchUsers', searchUsers);
-promptRouter.post('/getPrompt', getPrompt);
+promptRouter.get('/searchUsers', searchUsers);
+promptRouter.get('/getPrompt', getPrompt);
 promptRouter.post('/likePrompt', fetchUser, likePrompt);
 promptRouter.post('/isLikedByUser', fetchUser, islikedByUser);
 promptRouter.post('/addComment', fetchUser, addComment);
-promptRouter.post('/getComments', getComments);
-promptRouter.post('/getReplies', getReplies);
+promptRouter.get('/getComments', getComments);
+promptRouter.get('/getReplies', getReplies);
 promptRouter.post('/deleteComment', fetchUser, deleteComment);
 
 export default promptRouter;

@@ -6,8 +6,7 @@ import { nanoid } from 'nanoid';
 
 export const fetchPrompts = async (req, res) => {
 
-    let { page } = req.body;
-
+    let { page } = req.query;
     let maxLimit = 5;
 
     try {
@@ -114,7 +113,7 @@ export const searchPrompts = async (req, res) => {
 }
 
 export const searchUsers = async (req,res)=>{
-    let { query } = req.body;
+    let { query } = req.query;
 
     let findQuery = { "personal_info.username": new RegExp(query, 'i') };
 
@@ -197,7 +196,7 @@ export const promptPost = async (req, res) => {
 }
 
 export const getPrompt = async (req, res) => {
-    const { promptId, draft, mode } = req.body;
+    const { promptId, draft, mode } = req.query;
     const incrementVal = mode != 'edit' ? 1 : 0;
     
     try {
@@ -320,7 +319,7 @@ export const addComment = (req, res) => {
 }
 
 export const getComments = (req, res) => {
-    const { promptId, skip } = req.body;
+    const { promptId, skip } = req.query;
 
     const maxLimit = 5;
 
@@ -338,7 +337,7 @@ export const getComments = (req, res) => {
 }
 
 export const getReplies = (req, res) => {
-    const { _id, skip } = req.body;
+    const { _id, skip } = req.query;
 
     const maxLimit = 5;
 

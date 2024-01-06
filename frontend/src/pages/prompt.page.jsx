@@ -22,7 +22,7 @@ const PromptPage = () => {
 
     const fetchPrompt = async () => {
         try {
-            const result = await axios.post('/prompt/getPrompt', {promptId});
+            const result = await axios.get('/prompt/getPrompt', { params : {promptId} });
             const prompt = result.data.prompt;
 
             prompt.comment = await fetchComments({promptId: prompt._id, setParentCommentCountFun: setTotalParentCommentLoaded})

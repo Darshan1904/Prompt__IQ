@@ -17,7 +17,7 @@ const EditorPage = () => {
 
     const getPrompt = async(promptId)=>{
         try {
-            const result = await axios.post("/prompt/getPrompt", {promptId, draft:true, mode:'edit'});
+            const result = await axios.get("/prompt/getPrompt", { params : {promptId, draft:true, mode:'edit'}});
 
             const prompt = result.data.prompt;
             setPrompt(prompt);

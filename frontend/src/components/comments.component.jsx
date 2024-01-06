@@ -9,7 +9,7 @@ import CommentCard from "./comment-card.component.jsx";
 export const fetchComments = async ({skip = 0, promptId, setParentCommentCountFun, commentArray = null}) => {
     let res;
 
-    await axios.post("/prompt/getComments", {promptId, skip}).then(({data})=> {
+    await axios.get("/prompt/getComments", { params : {promptId, skip} }).then(({data})=> {
         data.comments.map(comment => {
             comment.childrenLevel = 0;
         });

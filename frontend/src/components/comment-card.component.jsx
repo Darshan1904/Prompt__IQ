@@ -92,8 +92,7 @@ const CommentCard = ({ index, leftVal, commentData}) => {
             hideReply();
 
             try {
-                const result = await axios.post("/prompt/getReplies", {_id, skip});
-                console.log(result);
+                const result = await axios.get("/prompt/getReplies", { params : {_id, skip} });
 
                 commentData.isReplyLoaded = true;
 

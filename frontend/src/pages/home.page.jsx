@@ -19,22 +19,26 @@ const HomePage = () => {
 
     let categories = ["programming", "chatgpt", "bard", "tech", "story writing", "art", "music",  "marketing", "investing", "fitness", "education", "test"]
 
-    const fetchLatestPrompts = async ({page = 1}) => {
+    const fetchLatestPrompts = async ({ page = 1 }) => {
         try {
-            let res = await axios.post("/prompt/latestPrompts", {page});
-            let formatedData = await filterPaginationData({
-                state: prompts,
-                createNewArray: prompts === null ? true : false,
-                data: res.data.prompts, 
-                page: page,
-                counteRoute: "prompt/promptsCounte",
-            })
-            setPrompts(formatedData);
+          let res = await axios.get('/prompt/latestPrompts', {
+            params: { page },
+          });
+          
+          let formatedData = await filterPaginationData({
+            state: prompts,
+            createNewArray: prompts === null ? true : false,
+            data: res.data.prompts,
+            page: page,
+            counteRoute: "prompt/promptsCounte",
+          });
+          
+          setPrompts(formatedData);
         } catch (error) {
-            console.log(error);
-            toast.error("Something went wrong 😕!");
+          console.log(error);
+          toast.error("Something went wrong 😕!");
         }
-    }
+    };      
 
     const fetchTrendingPrompts = async () => {
         try {
