@@ -61,11 +61,14 @@ const SideNav = () => {
                             Test Prompts
                         </NavLink>
 
-                        <NavLink to="/dashboard/notification" onClick={(e)=> setPageState(e.target.innerText)}
+                        <NavLink to="/dashboard/myPrompts" onClick={(e)=> setPageState(e.target.innerText)}
                             className="sidebar-link"
                         >
-                            <i className="fi fi-rr-bell" />
-                            Notification
+                            {/* <i className="fi fi-rr-bell" />
+                            Notification */}
+
+                            <i className="fi fi-rr-file" />
+                            My Prompts
                         </NavLink>
 
                         <NavLink to="/editor" onClick={(e)=> setPageState(e.target.innerText)}

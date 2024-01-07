@@ -1,7 +1,7 @@
 import User from "../models/User.model.js";
 import { nanoid } from "nanoid";
 import admin from "firebase-admin";
-import serviceAccountKey from "../promptiq-59efc-firebase-adminsdk-2o80a-65b89b7271.json" assert { type: 'json' };
+import serviceAccountKey from "../firbase.js";
 import {getAuth} from "firebase-admin/auth";
 
 admin.initializeApp({
