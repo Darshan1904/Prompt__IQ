@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBCXVKy2e0S7hnNk0XNXB_NTVdHdtesBD0",
-  authDomain: "promptiq-59efc.firebaseapp.com",
-  projectId: "promptiq-59efc",
-  storageBucket: "promptiq-59efc.appspot.com",
-  messagingSenderId: "546733260944",
-  appId: "1:546733260944:web:9c7c0b561531ac017bd815"
+  apiKey: import.meta.env.VITE_APP_API_APIKEY,
+  authDomain: import.meta.env.VITE_APP_API_AUTHDOMAIN,
+  projectId: import.meta.env.VITE_APP_API_PROJECTID,
+  storageBucket: import.meta.env.VITE_APP_API_STORAGE,
+  messagingSenderId: import.meta.env.VITE_APP_API_MID,
+  appId: import.meta.env.VITE_APP_API_APPID
 };
 
 const app = initializeApp(firebaseConfig);
