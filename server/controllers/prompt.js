@@ -132,7 +132,6 @@ export const searchUsers = async (req,res)=>{
 
 export const promptPost = async (req, res) => {
     let authorId = req.user._id;
-
     let { title, content, des, tags, draft, promptId} =  req.body;
 
     if(!title.length){
@@ -155,9 +154,15 @@ export const promptPost = async (req, res) => {
 
     tags = tags.map(tag => tag.toLowerCase());
 
-    let prompt_id = promptId || title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+    let prompt_id;
+    if(promptId && promptId.length){
+        prompt_id = promptId
+    }
+    else{
+        prompt_id = title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+    }
 
-    if(promptId){
+    if(promptId && promptId.length){
 
         await Prompt.findOneAndUpdate({ "prompt_id" : promptId.promptId }, { title, content, des, tags, draft: Boolean(draft) }, { new: true })
         .then(prompt => {
