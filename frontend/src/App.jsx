@@ -22,6 +22,7 @@ const App = () => {
             <PromptState>
                 <EditorState>
                     <Routes>
+                        <Route element={<Analytics />} />
                         <Route path="/editor" element={<Editor />} />
                         <Route path="/editor/:promptId" element={<Editor />} />
                         <Route path="/" element={<Navbar />}>
@@ -38,7 +39,6 @@ const App = () => {
                             <Route path="testPrompt" element={<TestPrompt />} />
                             <Route path="*" element={<PageNotFound />} />
                         </Route>
-                        <Analytics />
                     </Routes>
                 </EditorState>
             </PromptState>
