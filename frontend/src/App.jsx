@@ -14,6 +14,7 @@ import SideNav from "./components/sidenavbar.component";
 import ChangePassword from "./pages/change-password.page";
 import EditProfile from "./pages/edit-profile.page";
 import TestPrompt from "./components/testprompt.component";
+import { Analytics } from '@vercel/analytics/react';
 
 const App = () => {
     return (
@@ -37,6 +38,7 @@ const App = () => {
                             <Route path="testPrompt" element={<TestPrompt />} />
                             <Route path="*" element={<PageNotFound />} />
                         </Route>
+                        <Analytics />
                     </Routes>
                 </EditorState>
             </PromptState>
