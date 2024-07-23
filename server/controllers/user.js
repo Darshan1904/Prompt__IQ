@@ -1,4 +1,5 @@
 import User from '../models/User.model.js';
+import Notification from '../models/Notification.model.js';
 
 export const getProfile = async (req, res) => {
     try {
@@ -69,4 +70,79 @@ export const updateProfile = async (req, res) => {
         return res.status(500).send({error : error.message});
     }
 
+}
+
+export const notification = async (req, res) => {
+    let userId = req.user._id;
+
+    try {
+        const result = await Notification.exists({notification_for: userId, seen: false, user:{ $ne: userId }});
+    
+        if(result){
+            return res.status(200).send({newNotification: true});
+        }
+        else{
+            return res.status(200).send({newNotification: false});
+        }  
+    } catch (error) {
+        return res.status(500).send({error: error.message});
+    }
+}
+
+export const notifications = async (req, res) => {
+    const userId = req.user._id;
+
+    const { page, filter, deletedDocCount } = req.body;
+    const maxLimit = 10;
+    const findQuery = { notification_for: userId, user:{ $ne: userId } };
+    const skipDocs = ( page -1 )*maxLimit;
+
+    if(filter != "all"){
+        findQuery.type = filter;
+    }
+
+    if(deletedDocCount){
+        skipDocs -= deletedDocCount;
+    }
+
+    try {
+        const notifications = await Notification.find(findQuery)
+        .skip(skipDocs)
+        .limit(maxLimit)
+        .populate("prompt", "title prompt_id")
+        .populate("user", "personal_info.fullname personal_info.username personal_info.profile_img")
+        .populate("comment", "comment")
+        .populate("replied_on_comment", "comment")
+        .populate("reply", "comment")
+        .sort({ createdAt: -1 })
+        .select("createdAt type seen reply");
+
+        await Notification.updateMany(findQuery, { seen: true })
+        .skip(skipDocs)
+        .limit(maxLimit)
+
+        return res.status(200).send(notifications);
+    } catch (error) {
+        return res.status(500).send({error: error.message});
+    }
+}
+
+export const notificationCount = async (req, res) => {
+    const userId = req.user._id;
+
+    const { filter } = req.body;
+
+    const findQuery = { notification_for: userId, user:{ $ne: userId } };
+
+    if(filter != "all"){
+        findQuery.type = filter;
+    }
+
+    try {
+        const count = await Notification.countDocuments(findQuery);
+    
+        return res.status(200).send({totalDocs : count});
+    } catch (error) {
+        return res.status(500).send({error: error.message});
+    }
 }

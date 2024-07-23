@@ -5,7 +5,7 @@ import { Outlet, Navigate, NavLink } from "react-router-dom";
 const SideNav = () => {
 
     const page = location.pathname.split('/')[2];
-    const { userAuth: {authToken} } = useContext(UserContext);
+    const { userAuth: {authToken, newNotification} } = useContext(UserContext);
     const [ pageState, setPageState ] = useState(page);
     const [ showSideNav, setShowSideNav ] = useState(false);
 
@@ -57,18 +57,19 @@ const SideNav = () => {
                         <NavLink to="/testPrompt" onClick={(e)=> setPageState(e.target.innerText)}
                             className="sidebar-link"
                         >
-                            <i className="fi fi-rr-test" />
+                            <i className="fi fi-rr-file" />
                             Test Prompts
                         </NavLink>
 
-                        <NavLink to="/dashboard/myPrompts" onClick={(e)=> setPageState(e.target.innerText)}
+                        <NavLink to="/dashboard/notifications" onClick={(e)=> setPageState(e.target.innerText)}
                             className="sidebar-link"
                         >
-                            {/* <i className="fi fi-rr-bell" />
-                            Notification */}
-
-                            <i className="fi fi-rr-file" />
-                            My Prompts
+                            <div className="relative">
+                                <i className="fi fi-rr-bell" />
+                                {newNotification && <span className='bg-red w-2 h-2 rounded-full absolute z-10 top-0 right-0'>
+                                </span>}
+                            </div>
+                            Notification
                         </NavLink>
 
                         <NavLink to="/editor" onClick={(e)=> setPageState(e.target.innerText)}
@@ -81,7 +82,7 @@ const SideNav = () => {
                         <h1 className="text-xl text-dark-grey mb-3 mt-20">Settings</h1>
                         <hr className="border-grey -ml-6 mb-8 mr-6" />
 
-                        <NavLink to="editProfile" onClick={(e)=> setPageState(e.target.innerText)}
+                        <NavLink to="/settings/editProfile" onClick={(e)=> setPageState(e.target.innerText)}
                             className="sidebar-link"
                         >
                             <i className="fi fi-rr-user" />

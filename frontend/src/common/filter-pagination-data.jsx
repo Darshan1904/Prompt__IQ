@@ -1,7 +1,15 @@
 import axios from "../axios.js";
 
-export const filterPaginationData = async ({createNewArray = false, state, data, page, counteRoute, dataToSend}) => {
+export const filterPaginationData = async ({createNewArray = false, state, data, page, counteRoute, dataToSend, user}) => {
     let obj;
+
+    let headers = {};
+    
+    if(user){
+        headers.headers = {
+            'authorization': `Bearer ${user}`
+        }
+    }
 
     if(state!==null && createNewArray===false){
         obj = {...state, results:[...state.results, ...data], page: page};
@@ -11,7 +19,7 @@ export const filterPaginationData = async ({createNewArray = false, state, data,
         obj = {results:data, page: 1, totalDocs: res.data.totalDocs};
     }
     else{
-        const res = await axios.post(`/${counteRoute}`, dataToSend);
+        const res = await axios.post(`/${counteRoute}`, dataToSend, headers);
         obj = {results:data, page: 1, totalDocs: res.data.totalDocs};
     }
 

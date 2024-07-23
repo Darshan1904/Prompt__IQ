@@ -15,6 +15,7 @@ import ChangePassword from "./pages/change-password.page";
 import EditProfile from "./pages/edit-profile.page";
 import TestPrompt from "./components/testprompt.component";
 import { Analytics } from '@vercel/analytics/react';
+import Notifications from "./pages/notifications.page";
 
 const App = () => {
     return (
@@ -27,6 +28,9 @@ const App = () => {
                         <Route path="/editor/:promptId" element={<Editor />} />
                         <Route path="/" element={<Navbar />}>
                             <Route index element={<HomePage />} />
+                            <Route path="dashboard" element={<SideNav />}>
+                                <Route path="notifications" element={<Notifications />} />
+                            </Route>
                             <Route path="settings" element={<SideNav />}>
                                 <Route path="editProfile" element={<EditProfile />} />
                                 <Route path="changePassword" element={<ChangePassword />} />

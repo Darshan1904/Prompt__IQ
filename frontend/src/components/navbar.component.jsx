@@ -1,14 +1,15 @@
 import {Link, Outlet } from 'react-router-dom';
 import logo from "../imgs/logo.png";
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import UserContext from '../context/User/userContext';
 import UserNavigationPannel from './user-navigation.component';
 import { useNavigate } from 'react-router-dom';
+import axios from '../axios.js';
 
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [navState, setNavState] = useState(false); 
-    const {userAuth} = useContext(UserContext);
+    const {userAuth, userAuth:{newNotification}, setUserAuth} = useContext(UserContext);
     const Navigate = useNavigate();
 
     const handleSearch = (e) => {
@@ -19,6 +20,24 @@ const Navbar = () => {
             Navigate(`/search/${query}`)
         }
     }
+
+    useEffect(()=>{
+
+        if(userAuth.authToken){
+            axios.get('/user/newNotification', {
+                headers: {
+                    'authorization': `Bearer ${userAuth.authToken}`
+                }
+            })
+            .then(({data})=>{
+                setUserAuth({...userAuth, ...data})
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+        }
+
+    }, [userAuth.authToken])
 
     return (
         <>
@@ -40,7 +59,7 @@ const Navbar = () => {
 
                 <div className="flex items-center gap-3 md:gap-6 ml-auto">
                     <button className="md:hidden bg-grey w-12 h-12 rounded-full flex items-center justify-center"
-                    onClick={() => {setSearchBoxVisibility(currentVal => !currentVal); console.log(searchBoxVisibility)}} >
+                    onClick={() => {setSearchBoxVisibility(currentVal => !currentVal);}} >
                         <i className="fi fi-rr-search text-x1"></i>
                     </button>
 
@@ -52,11 +71,13 @@ const Navbar = () => {
                     {
                         userAuth.authToken ?
                         <>
-                            {/* <Link to="/dashboard/notifications">
+                            <Link to="/dashboard/notifications">
                                 <button className='w-12 h-12 rounded-full bg-grey relative hover:bg-black/10'>
                                     <i className='fi fi-rr-bell text-2xl block mt-1'></i>
+                                    {newNotification && <span className='bg-red w-3 h-3 rounded-full absolute z-10 top-2 right-2'>
+                                    </span>}
                                 </button>
-                            </Link> */}
+                            </Link>
 
                             <div className='relative' onClick={() => setNavState(!navState)}
                                 onBlur = {() => {
