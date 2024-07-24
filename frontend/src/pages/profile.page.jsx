@@ -142,7 +142,7 @@ const ProfilePage = () => {
                                     prompts === null ? <Loader /> : prompts.results.length ? prompts.results.map((prompt, index) => {
                                         return (
                                             <AnimationWrapper transition={{duration:1, delay: index*.1}} key={index}>
-                                                <PromptCard key={index} prompt={prompt} author={prompt.author.personal_info} />
+                                                <PromptCard key={index} prompt={prompt} route="/user" author={prompt.author.personal_info} />
                                             </AnimationWrapper>
                                         )  
                                     })

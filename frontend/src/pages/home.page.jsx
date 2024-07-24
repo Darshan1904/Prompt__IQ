@@ -101,7 +101,7 @@ const HomePage = () => {
             <section className="flex justify-center h-cover gap-10">
                 {/* latest blogs */}
                 <div className="w-full">
-                    <InPageNavigation routes={[pageState, "trending blogs"]} defaultHidden={["trending blogs"]}>
+                    <InPageNavigation routes={[pageState, "trending prompts"]} defaultHidden={["trending prompts"]}>
                         <>
                             {
                                 prompts === null ? <Loader /> : prompts.results.length ? prompts.results.map((prompt, index) => {
@@ -129,7 +129,7 @@ const HomePage = () => {
                         </>
                     </InPageNavigation>
                 </div>
-                {/* filters and trending blogs */}
+                {/* filters and trending prompts */}
                 <div className="min-w-[40%] lg:min-w-[400px] max-w-min border-l border-grey pl-8 pt-3 max-md:hidden">
                     <div className="flex flex-col gap-10">
                         <div>
