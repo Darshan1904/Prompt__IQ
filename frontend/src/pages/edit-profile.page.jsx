@@ -83,7 +83,7 @@ const EditProfile = () => {
                 setCharactersLeft(bioLimit - data.personal_info.bio.length);
             })
             .catch(err => {
-                console.log(err);
+                toast.error("Something went wrong!!");
             });
         
         }

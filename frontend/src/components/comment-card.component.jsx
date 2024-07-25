@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { getFullday } from "../common/date";
 import UserContext from "../context/User/userContext";
-import { toast } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
 import CommentField from "./comment-field.component";
 import PromptContext from "../context/User/promptContext";
 import axios from "../axios.js";
@@ -81,7 +81,7 @@ const CommentCard = ({ index, leftVal, commentData}) => {
 
             removeCommentsCard(index+1, true);
         } catch (error) {
-            console.log(error);
+            toast.error("Something went wrong!!");
         }
 
         e.target.setAttribute("disabled", false);
@@ -105,10 +105,9 @@ const CommentCard = ({ index, leftVal, commentData}) => {
                 }
 
                 setPrompt({...prompt, comment: { ...pcomment, result: commentsArr }})
-                console.log(setPrompt);
 
             } catch (error) {
-                console.log(error);
+                toast.error("Something went wrong!!");
             }
         }
     }
@@ -160,6 +159,7 @@ const CommentCard = ({ index, leftVal, commentData}) => {
                     </div>
                 }
             </div>
+            <Toaster />
         </div>
     )
 }

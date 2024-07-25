@@ -60,7 +60,6 @@ const CommentField = ({action, index=undefined, replyingTo=undefined, setReplyin
 
         } catch (error) {
             toast.error("Something went wrong!!");
-            console.log(error);
         }
 
     }

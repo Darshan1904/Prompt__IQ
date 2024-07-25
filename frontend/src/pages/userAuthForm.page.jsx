@@ -39,7 +39,6 @@ const userAuthForm = ({type}) => {
 
         } catch (error) {
             toast.error("Trouble login through google");
-            console.log(error);
         }
     }
 

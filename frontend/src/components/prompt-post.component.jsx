@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "../axios.js"
 import { useContext } from "react";
 import UserContext from "../context/User/userContext.jsx";
+import toast from "react-hot-toast";
 
 const PromptCard = ({prompt, author, route = ""}) => {
 
@@ -19,7 +20,7 @@ const PromptCard = ({prompt, author, route = ""}) => {
             });
             window.location.reload()
         } catch (error) {
-            console.log(error);
+            toast.error("Error Deleting Prompt");
         }
     }
 

@@ -25,6 +25,6 @@ export const authWithGoogle = async() => {
         user = result.user;
         return user;
     } catch (error) {
-        console.log(error);
+        return error;
     }
 }

@@ -46,7 +46,6 @@ const PromptEditor = () => {
             setEditorState("publish");
         } catch (error) {
             toast.error("Something went wrong 😕");
-            console.log(error);
         }
     }
 
@@ -85,7 +84,6 @@ const PromptEditor = () => {
             } catch (error) {
                 e.target.classList.remove("disabled");
                 toast.dismiss(loadingToast);
-                console.log(error);
                 toast.error("Something went wrong 😕");
             }
     }

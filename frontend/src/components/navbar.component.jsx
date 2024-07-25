@@ -5,6 +5,7 @@ import UserContext from '../context/User/userContext';
 import UserNavigationPannel from './user-navigation.component';
 import { useNavigate } from 'react-router-dom';
 import axios from '../axios.js';
+import {toast} from 'react-hot-toast';
 
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
@@ -33,7 +34,7 @@ const Navbar = () => {
                 setUserAuth({...userAuth, ...data})
             })
             .catch(err=>{
-                console.log(err);
+                toast.error("Error getting notifications");
             })
         }
 

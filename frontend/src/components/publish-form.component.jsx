@@ -103,7 +103,6 @@ const PublishForm = () => {
         } catch (error) {
             e.target.classList.remove("disabled");
             toast.dismiss(loadingToast);
-            console.log(error);
             toast.error("Something went wrong 😕");
         }
     }

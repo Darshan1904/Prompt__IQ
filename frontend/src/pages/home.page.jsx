@@ -35,7 +35,6 @@ const HomePage = () => {
           
           setPrompts(formatedData);
         } catch (error) {
-          console.log(error);
           toast.error("Something went wrong 😕!");
         }
     };      
@@ -45,7 +44,6 @@ const HomePage = () => {
             let res = await axios.get("/prompt/trendingPrompts");
             setTrendingPrompts(res.data.prompts);
         } catch (error) {
-            console.log(error);
             toast.error("Something went wrong 😕!");
         }
     }
@@ -74,7 +72,6 @@ const HomePage = () => {
             })
             setPrompts(formatedData);
         } catch (error) {
-            console.log(error);
             toast.error("Something went wrong 😕!");
         }
     }

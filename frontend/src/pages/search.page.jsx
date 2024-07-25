@@ -30,7 +30,6 @@ const SearchPage = () => {
             })
             setPrompts(formatedData);
         } catch (error) {
-            console.log(error);
             toast.error("Something went wrong 😕!");
         }
     }
@@ -42,7 +41,6 @@ const SearchPage = () => {
           });
           setUsers(res.data.users);
         } catch (error) {
-          console.log(error);
           toast.error("Something went wrong 😕!");
         }
     };
