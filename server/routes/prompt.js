@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { fetchPrompts, promptPost, fetchTrendingPrompts, searchPrompts, getCount, getSearchCount, searchUsers, getPrompt, likePrompt, islikedByUser, addComment, getComments, getReplies, deleteComment } from '../controllers/prompt.js';
+import { fetchPrompts, promptPost, fetchTrendingPrompts, searchPrompts, getCount, getSearchCount, searchUsers, getPrompt, likePrompt, islikedByUser, addComment, getComments, getReplies, deleteComment, deletePrompt } from '../controllers/prompt.js';
 import fetchUser from '../middlewares/fetchUser.js';
 
 const promptRouter = Router();
@@ -18,5 +18,6 @@ promptRouter.post('/addComment', fetchUser, addComment);
 promptRouter.get('/getComments', getComments);
 promptRouter.get('/getReplies', getReplies);
 promptRouter.post('/deleteComment', fetchUser, deleteComment);
+promptRouter.post('/deletePrompt', fetchUser, deletePrompt);
 
 export default promptRouter;

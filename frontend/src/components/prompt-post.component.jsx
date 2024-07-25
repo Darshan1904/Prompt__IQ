@@ -1,13 +1,26 @@
 import {formatDate} from "../common/date";
 import { Link } from "react-router-dom";
+import axios from "../axios.js"
+import { useContext } from "react";
+import UserContext from "../context/User/userContext.jsx";
 
 const PromptCard = ({prompt, author, route = ""}) => {
 
     let {title, des, activity: { total_likes }, tags, publishedAt, prompt_id: id} = prompt;
     let {username, profile_img, fullname} = author;
+    const { userAuth: { authToken } } = useContext(UserContext);
 
-    const handlePromptDelete = () => {
-        console.log("delete prompt");
+    const handlePromptDelete = async () => {
+        try {
+            const result = await axios.post("/prompt/deletePrompt", {promptId: id}, {
+                headers:{
+                    "authorization" : `Bearer ${authToken}`
+                }
+            });
+            window.location.reload()
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
