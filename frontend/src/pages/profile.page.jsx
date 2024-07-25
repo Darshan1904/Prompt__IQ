@@ -39,7 +39,7 @@ const ProfilePage = () => {
 
     const { personal_info: { fullname, username: profile_username, profile_img, bio}, account_info:{total_posts, total_reads}, social_links, joinedAt} = profile;
 
-    const { userAuth : { username } } = useContext(UserContex);
+    const { userAuth : { username, authToken } } = useContext(UserContex);
 
     const fetchUserProfile = async () => {
         try {
@@ -58,7 +58,7 @@ const ProfilePage = () => {
           toast.error("Something went wrong 😕");
           console.error(error);
         }
-      };
+    };
 
     const getPrompts = async ({page = 1, user_id, createNewArray = true}) => {
 
@@ -84,6 +84,26 @@ const ProfilePage = () => {
             console.error(error);
         }
     }
+
+    const handlePromptDelete = async (promptId) => {
+        try {
+            await axios.post("/prompt/deletePrompt", {promptId}, {
+                headers: {
+                    "authorization": `Bearer ${authToken}`
+                }
+            });
+            
+            // filter out the deleted prompt
+            setPrompts(prevPrompts => ({
+                ...prevPrompts,
+                results: prevPrompts.results.filter(prompt => prompt.prompt_id !== promptId)
+            }));
+            toast.success("Prompt deleted successfully");
+        } catch (error) {
+            toast.error("Error Deleting Prompt");
+            console.log(error)
+        }
+    };
 
     const resetState = ()=>{
         setProfile(profileStructure);
@@ -142,7 +162,7 @@ const ProfilePage = () => {
                                     prompts === null ? <Loader /> : prompts.results.length ? prompts.results.map((prompt, index) => {
                                         return (
                                             <AnimationWrapper transition={{duration:1, delay: index*.1}} key={index}>
-                                                <PromptCard key={index} prompt={prompt} route="/user" author={prompt.author.personal_info} />
+                                                <PromptCard key={index} prompt={prompt} route="/user" author={prompt.author.personal_info} onDelete={handlePromptDelete} />
                                             </AnimationWrapper>
                                         )  
                                     })

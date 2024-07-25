@@ -1,29 +1,13 @@
 import {formatDate} from "../common/date";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "../axios.js"
-import { useContext } from "react";
-import UserContext from "../context/User/userContext.jsx";
-import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
-const PromptCard = ({prompt, author, route = ""}) => {
+const PromptCard = ({prompt, author, route = "", onDelete}) => {
 
     let {title, des, activity: { total_likes }, tags, publishedAt, prompt_id: id} = prompt;
     let {username, profile_img, fullname} = author;
-    const { userAuth: { authToken } } = useContext(UserContext);
-
-    const navigate = useNavigate();
 
     const handlePromptDelete = async () => {
-        try {
-            const result = await axios.post("/prompt/deletePrompt", {promptId: id}, {
-                headers:{
-                    "authorization" : `Bearer ${authToken}`
-                }
-            });
-            navigate(0);
-        } catch (error) {
-            toast.error("Error Deleting Prompt");
-        }
+        onDelete(id);
     }
 
     return (
