@@ -1,6 +1,6 @@
 # Prompt_IQ
 
-Prompt_IQ is a dedicated social media platform tailored for the vibrant Prompt community. It serves as a centralized hub for users to explore, share, and test a wide array of Prompts. Users can seamlessly add Prompts to their favorites, follow other users, like, comment, copy Prompts, and conduct detailed Prompt searches.
+Prompt_IQ is a dedicated social media platform tailored for the vibrant Prompt community. It serves as a centralized hub for users to explore, share, and test a wide array of Prompts. Users can seamlessly add Prompts to their favourites, follow other users, like, comment, copy Prompts, and conduct detailed Prompt searches.
 
 Website Link: [Prompt_IQ](https://prompt-iq-bbzo.vercel.app/)
 
