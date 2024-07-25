@@ -1,10 +1,13 @@
+import { useContext } from "react";
 import {formatDate} from "../common/date";
 import { Link } from "react-router-dom";
+import UserContext from "../context/User/userContext";
 
 const PromptCard = ({prompt, author, route = "", onDelete}) => {
 
     let {title, des, activity: { total_likes }, tags, publishedAt, prompt_id: id} = prompt;
     let {username, profile_img, fullname} = author;
+    const { userAuth : { username : loggedInUser } } = useContext(UserContext);
 
     const handlePromptDelete = async () => {
         onDelete(id);
@@ -17,7 +20,7 @@ const PromptCard = ({prompt, author, route = "", onDelete}) => {
                     <img src={profile_img} alt="profile" className="w-6 h-6 rounded-full" />
                     <p className="line-clamp-1">{fullname} @{username}</p>
                     <p className="min-w-fit">{formatDate(publishedAt)}</p>
-                    {route=="/user" && <button className="ml-auto px-4 py-2 text-red z-50" onClick={handlePromptDelete}><i className="fi fi-rr-delete text-2xl"/></button>}
+                    {route=="/user" && username === loggedInUser && <button className="ml-auto px-4 py-2 text-red" onClick={handlePromptDelete}><i className="fi fi-rr-delete text-2xl"/></button>}
                 </div>
 
                 <Link to={`/prompts/:${id}`}>
