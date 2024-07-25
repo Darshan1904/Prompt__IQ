@@ -9,6 +9,7 @@ Website Link: [Prompt_IQ](https://prompt-iq-bbzo.vercel.app/)
 - Explore, share, and test diverse Prompts within the community.
 - Like, comment, and copy Prompts for use.
 - User dashboard.
+- Notification feature on like, comment and reply.
 - Conduct detailed searches to discover specific Prompts.
 - Test your prompt using a chatbot powered by the **OpenAI-GPT 3.5 API**
 
