@@ -8,7 +8,7 @@ import PromptCard from "../components/prompt-post.component";
 import NoData from "../components/nodata.component";
 import { filterPaginationData } from "../common/filter-pagination-data";
 import axios from "../axios.js";
-import toast from "react-hot-toast";
+import {toast, Toaster} from "react-hot-toast";
 import UserCard from "../components/usercard.component.jsx";
 
 const SearchPage = () => {
@@ -78,6 +78,7 @@ const SearchPage = () => {
 
     return (
         <section className="h-cover flex justify-center gap-10">
+            <Toaster />
             <div className="w-full">
                 <InPageNavigation routes={[`Search results for ${query}`, "Accounts Matched"]} defaultHidden={["Accounts Matched"]}>
 

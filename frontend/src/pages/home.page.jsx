@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AnimationWrapper from "../common/page-animation"
 import InPageNavigation from "../components/inpage-navigation.component";
 import Loader from "../components/loader.component";
-import toast from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 import axios from "../axios.js";
 import PromptCard from "../components/prompt-post.component.jsx";
 import MinimalPromptPost from "../components/nobanner-prompt-post.component.jsx";
@@ -97,6 +97,7 @@ const HomePage = () => {
         <AnimationWrapper>
             <section className="flex justify-center h-cover gap-10">
                 {/* latest blogs */}
+                <Toaster />
                 <div className="w-full">
                     <InPageNavigation routes={[pageState, "trending prompts"]} defaultHidden={["trending prompts"]}>
                         <>

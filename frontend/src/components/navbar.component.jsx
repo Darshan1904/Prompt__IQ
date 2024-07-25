@@ -5,7 +5,7 @@ import UserContext from '../context/User/userContext';
 import UserNavigationPannel from './user-navigation.component';
 import { useNavigate } from 'react-router-dom';
 import axios from '../axios.js';
-import {toast} from 'react-hot-toast';
+import {toast, Toaster} from 'react-hot-toast';
 
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
@@ -108,6 +108,7 @@ const Navbar = () => {
 
                 </div>
             </nav>
+            <Toaster />
 
             <Outlet />
         </>
