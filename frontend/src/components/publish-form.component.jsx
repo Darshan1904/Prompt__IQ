@@ -65,14 +65,17 @@ const PublishForm = () => {
 
         if(!newPrompt.title.length){
             toast.error("Title is required.");
+            return;
         }
     
         if(!newPrompt.des.length){
             toast.error("Prompt is required.");
+            return;
         }
     
         if(!newPrompt.tags.length || newPrompt.tags.length > tagLimit){
            toast.error(`Tags are required and should be less than ${tagLimit}.`);
+           return;
         }
 
         let loadingToast = toast.loading("Publishing....");
