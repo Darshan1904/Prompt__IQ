@@ -107,20 +107,20 @@ export const signIn = async (req, res) => {
 export const googleAuth = async (req, res) => {
     let {authToken} = req.body;
 
-    getAuth().verifyIdToken(authToken)
-    .then(async (decodedToken) => {
+    try {
+        let decodedToken = await getAuth().verifyIdToken(authToken.toString())
         let {email, name, picture} = decodedToken;
-
+    
         picture = picture.replace("s96-c", "s384-c");
-
+    
         let user = await User.findOne({"personal_info.email": email}).select("personal_info.profile_img personal_info.username personal_info.fullname google_auth")
         .catch((err) => {
             return res.status(500).send({error: "Something went wrong"});
         });
-
+    
         if(!user) {
             let username = await generateUserName(email);
-
+    
             user = new User(
                 {
                     personal_info:{
@@ -132,7 +132,7 @@ export const googleAuth = async (req, res) => {
                     google_auth: true
                 }
             );
-
+    
             await user.save().then(async (u) => {
                 user = u;
             })
@@ -145,12 +145,13 @@ export const googleAuth = async (req, res) => {
                 return res.status(403).send({error: "Email is already registered"});
             }
         }
-
+    
         return res.status(200).send(await formateDataToSend(user));
-    })
-    .catch((err) => {
+        
+    } catch (error) {
         return res.status(500).send({error: "Authentication failed!! Try using another email"});
-    });
+    }
+
 }
 
 export const changePassword = async (req, res) => {
