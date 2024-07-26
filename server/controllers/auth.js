@@ -34,27 +34,27 @@ export const signUp = async (req, res) => {
     
     //validate request
     if(name.length < 3 || password.length < 6) {
-        res.status(403).send({error: "Name must be at least 3 characters and password must be at least 6 characters"});
+        return res.status(403).send({error: "Name must be at least 3 characters and password must be at least 6 characters"});
     }
     
     if(!email.length) {
-        res.status(403).send({error: "Email is required"});
+        return res.status(403).send({error: "Email is required"});
     }
 
     let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
     let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
 
     if(!emailRegex.test(email)) {
-        res.status(403).send({error: "Email is invalid"});
+        return res.status(403).send({error: "Email is invalid"});
     }
 
     if(!passwordRegex.test(password)) {
-        res.status(403).send({error: "Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters"});
+        return res.status(403).send({error: "Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters"});
     }
 
     let isEmailTaken = await User.findOne({"personal_info.email": email});
     if(isEmailTaken) {
-        res.status(403).send({error: "Email is already taken"});
+        return res.status(403).send({error: "Email is already taken"});
     }
 
     let username = await generateUserName(email);
@@ -79,25 +79,25 @@ export const signIn = async (req, res) => {
     let {email, password} = req.body;
 
     if(!email.length) {
-        res.status(403).send({error: "Email is required"});
+        return res.status(403).send({error: "Email is required"});
     }
 
     if(!password.length) {
-        res.status(403).send({error: "Password is required"});
+        return res.status(403).send({error: "Password is required"});
     }
 
     let user = await User.findOne({"personal_info.email": email});
 
     if(!user) {
-       res.status(403).send({error: "Email is not registered"});
+       return res.status(403).send({error: "Email is not registered"});
     }
 
     if(user.google_auth) {
-        res.status(403).send({error: "Account is registered with google. Please use google to login"});
+        return res.status(403).send({error: "Account is registered with google. Please use google to login"});
     }
 
     if(!await user.comparePassword(password)) {
-       res.status(403).send({error: "Password is incorrect"});
+       return res.status(403).send({error: "Password is incorrect"});
     }
 
     const data = await formateDataToSend(user);

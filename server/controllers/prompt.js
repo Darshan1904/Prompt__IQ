@@ -136,24 +136,21 @@ export const promptPost = async (req, res) => {
 
     if(draft==false){
         if(!title.length){
-            res.status(403).send({
+            return res.status(403).send({
                 err: "Title is required."
             });
-            return;
         }
 
         if(!des.length){
-            res.status(403).send({
+            return res.status(403).send({
                 err: "Description is required."
             });
-            return;
         }
 
         if(!tags.length || tags.length > 10){
-            res.status(403).send({
+            return res.status(403).send({
                 err: "Tags are required and should be less than 10 characters."
             });
-            return;
         }
     }
 
@@ -170,9 +167,15 @@ export const promptPost = async (req, res) => {
     if(promptId &&  Object.entries(promptId).length){
 
         await Prompt.findOneAndUpdate({ "prompt_id" : promptId.promptId }, { title, content, des, tags, draft: Boolean(draft) }, { new: true })
-        .then(prompt => {
-            res.status(200).send({
-                id : prompt.prompt_id
+        .then(prompt => { 
+            User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": icrementVal}}).then(user => {
+                res.status(200).send({
+                    id : prompt.prompt_id
+                });
+            }).catch(err => {
+                res.status(500).send({
+                    err: err.message
+                });
             });
         }).catch(err => {
             res.status(500).send({
@@ -283,7 +286,7 @@ export const addComment = (req, res) => {
     const { _id, comment, promptAuthor, replying_to } = req.body;
 
     if(!comment.length){
-        res.status(403).send({error: "Write something to leave a comment..."})
+        return res.status(403).send({error: "Write something to leave a comment..."})
     }
 
     let commentObj = {
