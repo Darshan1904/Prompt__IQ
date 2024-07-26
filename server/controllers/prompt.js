@@ -134,22 +134,27 @@ export const promptPost = async (req, res) => {
     let authorId = req.user._id;
     let { title, content, des, tags, draft, promptId} =  req.body;
 
-    if(!title.length){
-        res.status(403).send({
-            err: "Title is required."
-        });
-    }
+    if(draft==false){
+        if(!title.length){
+            res.status(403).send({
+                err: "Title is required."
+            });
+            return;
+        }
 
-    if(!des.length){
-        res.status(403).send({
-            err: "Description is required."
-        });
-    }
+        if(!des.length){
+            res.status(403).send({
+                err: "Description is required."
+            });
+            return;
+        }
 
-    if(!tags.length || tags.length > 10){
-        res.status(403).send({
-            err: "Tags are required and should be less than 10 characters."
-        });
+        if(!tags.length || tags.length > 10){
+            res.status(403).send({
+                err: "Tags are required and should be less than 10 characters."
+            });
+            return;
+        }
     }
 
     tags = tags.map(tag => tag.toLowerCase());

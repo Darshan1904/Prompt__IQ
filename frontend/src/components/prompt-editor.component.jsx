@@ -62,30 +62,30 @@ const PromptEditor = () => {
 
         e.target.classList.add("disabled");
 
-            let promptObj = { title: newTitle, content, tags, des, author, draft: true };
+        let promptObj = { title: newTitle, content, tags, des, author, draft: true };
 
-            try {
-                await axios.post("/prompt/post",{ ...promptObj, promptId}, {
-                    headers: {
-                        "authorization": `Bearer ${authToken}`
-                    }
-                })
+        try {
+            await axios.post("/prompt/post",{ ...promptObj, promptId}, {
+                headers: {
+                    "authorization": `Bearer ${authToken}`
+                }
+            });
+            
+            e.target.classList.remove("disabled");
+            toast.dismiss(loadingToast);
+            toast.success("Saved 👍");
+            setTextEditor({isReady: false});
+            setPrompt({ title: "", content: [], tags: [], des: "", author: {personal_info : {}} });
 
-                e.target.classList.remove("disabled");
-                toast.dismiss(loadingToast);
-                toast.success("Saved 👍");
-                setTextEditor({isReady: false});
-                setPrompt({ title: "", content: [], tags: [], des: "", author: {personal_info : {}} });
+            setTimeout(() => {
+                Navigate("/");
+            }, 500);
 
-                setTimeout(() => {
-                    Navigate("/");
-                }, 500);
-
-            } catch (error) {
-                e.target.classList.remove("disabled");
-                toast.dismiss(loadingToast);
-                toast.error("Something went wrong 😕");
-            }
+        } catch (error) {
+            e.target.classList.remove("disabled");
+            toast.dismiss(loadingToast);
+            toast.error("Something went wrong 😕");
+        }
     }
 
     return (
