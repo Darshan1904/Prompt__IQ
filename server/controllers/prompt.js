@@ -91,7 +91,7 @@ export const searchPrompts = async (req, res) => {
         findQuery = { title: new RegExp(query, 'i') , draft: false };
     }
     else if(author){
-        findQuery = { author, draft: false}
+        findQuery = { author }
     }
 
     let maxLimit = limit ? limit : 5;
@@ -101,7 +101,7 @@ export const searchPrompts = async (req, res) => {
                 .sort({"publishedAt": -1})
                 .skip((page - 1) * maxLimit)
                 .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
-                .select('title des tags prompt_id activity publishedAt -_id')
+                .select('title des tags prompt_id activity publishedAt -_id draft')
                 .limit(maxLimit);
         page = page + 1;
         res.status(200).send({prompts});
@@ -160,14 +160,14 @@ export const promptPost = async (req, res) => {
     tags = tags.map(tag => tag.toLowerCase());
 
     let prompt_id;
-    if(promptId && promptId.length){
+    if(promptId &&  Object.entries(promptId).length){
         prompt_id = promptId
     }
     else{
         prompt_id = title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
     }
 
-    if(promptId && promptId.length){
+    if(promptId &&  Object.entries(promptId).length){
 
         await Prompt.findOneAndUpdate({ "prompt_id" : promptId.promptId }, { title, content, des, tags, draft: Boolean(draft) }, { new: true })
         .then(prompt => {
