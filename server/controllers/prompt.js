@@ -168,7 +168,7 @@ export const promptPost = async (req, res) => {
 
         await Prompt.findOneAndUpdate({ "prompt_id" : promptId.promptId }, { title, content, des, tags, draft: Boolean(draft) }, { new: true })
         .then(prompt => { 
-            User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": icrementVal}}).then(user => {
+            User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": 1}}).then(user => {
                 res.status(200).send({
                     id : prompt.prompt_id
                 });
@@ -189,9 +189,9 @@ export const promptPost = async (req, res) => {
         });
     
         await prompt.save().then(prompt => {
-            let icrementVal = draft ? 0 : 1;
+            let incrementVal = draft ? 0 : 1;
     
-            User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": icrementVal}, $push: {"prompts": prompt._id}}).then(user => {
+            User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": incrementVal}, $push: {"prompts": prompt._id}}).then(user => {
                     res.status(200).send({
                         id : prompt.prompt_id
                     });

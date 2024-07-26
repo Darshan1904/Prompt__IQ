@@ -156,7 +156,7 @@ const ProfilePage = () => {
                     </div>
 
                     <div className="max-md:mt-12 w-full">
-                        <InPageNavigation routes={["Prompts Published", "About"]} defaultHidden={["About"]}>
+                        <InPageNavigation routes={["Prompts", "About"]} defaultHidden={["About"]}>
                             <>
                                 {
                                     prompts === null ? <Loader /> : prompts.results.length ? prompts.results.map((prompt, index) => {
