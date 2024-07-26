@@ -14,7 +14,6 @@ import SideNav from "./components/sidenavbar.component";
 import ChangePassword from "./pages/change-password.page";
 import EditProfile from "./pages/edit-profile.page";
 import TestPrompt from "./components/testprompt.component";
-import { Analytics } from '@vercel/analytics/react';
 import Notifications from "./pages/notifications.page";
 
 const App = () => {
@@ -23,7 +22,6 @@ const App = () => {
             <PromptState>
                 <EditorState>
                     <Routes>
-                        <Route element={<Analytics />} />
                         <Route path="/editor" element={<Editor />} />
                         <Route path="/editor/:promptId" element={<Editor />} />
                         <Route path="/" element={<Navbar />}>
