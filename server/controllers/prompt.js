@@ -5,17 +5,34 @@ import Comment from '../models/Comment.model.js';
 import { nanoid } from 'nanoid';
 
 export const fetchPrompts = async (req, res) => {
-
     let { page } = req.query;
     let maxLimit = 5;
 
     try {
-        let prompts = await Prompt.find({draft: false})
-                .sort({"publishedAt": -1})
-                .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
-                .select('title des tags prompt_id activity publishedAt -_id')
-                .skip((page - 1) * maxLimit)
-                .limit(maxLimit);
+        let prompts = await Prompt.aggregate([
+            { $match: { draft: false } },
+            { $sort: { publishedAt: -1 } },
+            { $skip: (page - 1) * maxLimit },
+            { $limit: maxLimit },
+            { $lookup: {
+                from: 'users',
+                localField: 'author',
+                foreignField: '_id',
+                as: 'author'
+            }},
+            { $unwind: '$author' },
+            { $project: {
+                title: 1,
+                des: 1,
+                tags: 1,
+                prompt_id: 1,
+                activity: 1,
+                publishedAt: 1,
+                'author.personal_info.profile_img': 1,
+                'author.personal_info.username': 1,
+                'author.personal_info.fullname': 1
+            }}
+        ]);
 
         res.status(200).send({prompts});
     } catch (error) {
@@ -63,13 +80,31 @@ export const getSearchCount = async (req, res) => {
 }
 
 export const fetchTrendingPrompts = async (req, res) => {
-
     try {
-        let prompts = await Prompt.find({draft: false})
-                .sort({"activity,total_reads": -1, "activity.total_likes":-1,  "publishedAt": -1})
-                .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
-                .select('title prompt_id publishedAt -_id')
-                .limit(5);
+        let prompts = await Prompt.aggregate([
+            { $match: { draft: false } },
+            { $sort: { 
+                "activity.total_reads": -1, 
+                "activity.total_likes": -1,  
+                "publishedAt": -1 
+            }},
+            { $limit: 5 },
+            { $lookup: {
+                from: 'users',
+                localField: 'author',
+                foreignField: '_id',
+                as: 'author'
+            }},
+            { $unwind: '$author' },
+            { $project: {
+                title: 1,
+                prompt_id: 1,
+                publishedAt: 1,
+                'author.personal_info.profile_img': 1,
+                'author.personal_info.username': 1,
+                'author.personal_info.fullname': 1
+            }}
+        ]);
 
         res.status(200).send({prompts});
     } catch (error) {
@@ -220,7 +255,7 @@ export const getPrompt = async (req, res) => {
         await User.findOneAndUpdate({"personal_info.username" : prompt.author.personal_info.username}, { $inc : {"account_info.total_reads": incrementVal}});
 
         if(prompt.draft && !draft){
-            return res.status(500).json({error: "You can not access draft prompt."})
+            return res.status(500).send({error: "You can not access draft prompt."})
         }
 
         res.status(200).send({prompt});
@@ -394,26 +429,34 @@ const deleteCommentFunc = async (comment) => {
             })
         }
     })
+    .catch((error)=>{
+        res.status(500).send({error: error.message});
+    });
 }
 
-export const deleteComment = (req, res) => {
+export const deleteComment = async (req, res) => {
     const userId = req.user._id;
     const { _id } = req.body;
 
-    Comment.findOneAndDelete({_id})
-    .then(async comment => {
-        if(comment.commented_by == userId){
-            deleteCommentFunc(comment);
+    try{
+        const comment = await Comment.findOne({_id})
 
-            res.status(200).send({msg:"Comment deleted"});
+        console.log(comment)
+        console.log(userId, comment.commented_by)
+        if (!comment) {
+            return res.status(404).send({error: "Comment not found"});
         }
-        else{
-            res.status(403).send({error: "You are not authorized to delete this comment."});
+        if (comment.commented_by != userId) {
+            return res.status(403).send({error: "You are not authorized to delete this comment."});
         }
-    })
-    .catch((error)=>{
+            
+        await Comment.findByIdAndDelete({_id});
+        deleteCommentFunc(comment);
+    
+        res.status(200).send({msg:"Comment deleted"});
+    } catch (error) {
         res.status(500).send({error: error.message});
-    })
+    };
 }
 
 const deletePromptFunc = async (prompt, userId) => {
@@ -426,22 +469,25 @@ const deletePromptFunc = async (prompt, userId) => {
     });
 }
 
-export const deletePrompt = (req, res) => {
+export const deletePrompt = async (req, res) => {
     const userId = req.user._id;
     const { promptId } = req.body;
 
-    Prompt.findOneAndDelete({prompt_id: promptId})
-    .then(async prompt => {
-        if(prompt.author == userId){
-            deletePromptFunc(prompt, userId);
-
-            res.status(200).send({msg:"Prompt deleted"});
+    try { 
+        const prompt = await Prompt.findOne({prompt_id: promptId})
+        if (!prompt) {
+            return res.status(404).send({error: "Prompt not found"});
         }
-        else{
-            res.status(403).send({error: "You are not authorized to delete this prompt."});
+        if (prompt.author != userId) {
+            return res.status(403).send({error: "You are not authorized to delete this prompt."});
         }
-    })
-    .catch((error)=>{
+            
+        await Prompt.findOneAndDelete({prompt_id: promptId});
+        deletePromptFunc(prompt, userId);
+    
+        res.status(200).send({msg:"Prompt deleted"});
+    } catch (error) {
         res.status(500).send({error: error.message});
-    })
+    }
+
 }
