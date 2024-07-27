@@ -441,8 +441,6 @@ export const deleteComment = async (req, res) => {
     try{
         const comment = await Comment.findOne({_id})
 
-        console.log(comment)
-        console.log(userId, comment.commented_by)
         if (!comment) {
             return res.status(404).send({error: "Comment not found"});
         }
