@@ -44,8 +44,8 @@ const PromptEditor = () => {
         try {    
             setPrompt({ title: newTitle, content, tags, des, author });
             setEditorState("publish");
-        } catch (error) {
-            toast.error("Something went wrong 😕");
+        } catch ({response}) {
+            toast.error(response.data.error);
         }
     }
 
@@ -56,6 +56,7 @@ const PromptEditor = () => {
 
         if(!newTitle.length){
             toast.error("Title is required.");
+            return;
         }
 
         let loadingToast = toast.loading("Saving Draft....");
@@ -81,10 +82,10 @@ const PromptEditor = () => {
                 Navigate("/");
             }, 500);
 
-        } catch (error) {
+        } catch ({response}) {
             e.target.classList.remove("disabled");
             toast.dismiss(loadingToast);
-            toast.error("Something went wrong 😕");
+            toast.error(response.data.error);
         }
     }
 

@@ -31,6 +31,7 @@ const ChangePassword = () => {
 
         if(!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)){
             toast.error("Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters.")
+            return;
         }
 
         e.target.setAttribute("disabled", true);

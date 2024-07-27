@@ -58,8 +58,8 @@ const CommentField = ({action, index=undefined, replyingTo=undefined, setReplyin
     
             setTotalParentCommentLoaded(prevVal => prevVal + parentCommentIncrementval);
 
-        } catch (error) {
-            toast.error("Something went wrong!!");
+        } catch ({response}) {
+            toast.error(response.data.error);
         }
 
     }

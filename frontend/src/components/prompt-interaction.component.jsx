@@ -38,8 +38,8 @@ const PromptInteraction = () => {
                     'authorization' : `Bearer ${authToken}`
                 }});
 
-            } catch (error) {
-                toast.error("Something went wrong!!");
+            } catch ({response}) {
+                toast.error(response.data.error);
             }
         }
         else{

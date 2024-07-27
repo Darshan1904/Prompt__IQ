@@ -17,7 +17,7 @@ const HomePage = () => {
     const [trendingPrompts, setTrendingPrompts] = useState(null);
     const [pageState, setPageState] = useState("home");
 
-    let categories = ["programming", "chatgpt", "bard", "tech", "story writing", "art", "music",  "marketing", "investing", "fitness", "education"]
+    let categories = ["programming", "chatgpt", "gemini", "tech", "content creation", "story writing", "art", "music",  "marketing", "investing", "fitness", "education"]
 
     const fetchLatestPrompts = async ({ page = 1 }) => {
         try {

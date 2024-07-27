@@ -39,7 +39,7 @@ const EditProfile = () => {
             return toast.error("Username should be atleast 3 letters long.");
         }
         if(bio.length > bioLimit){
-            return toast.err(`Bio should not be more than ${bioLimit}`);
+            return toast.error(`Bio should not be more than ${bioLimit}`);
         }
 
         const loadingToast = toast.loading("Updating...");
@@ -82,8 +82,8 @@ const EditProfile = () => {
                 setLoading(false);
                 setCharactersLeft(bioLimit - data.personal_info.bio.length);
             })
-            .catch(err => {
-                toast.error("Something went wrong!!");
+            .catch(({response}) => {
+                toast.error(response.data.error);
             });
         
         }

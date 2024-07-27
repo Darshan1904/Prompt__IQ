@@ -103,10 +103,10 @@ const PublishForm = () => {
                 setEditorState("editor");
             }, 1000);
 
-        } catch (error) {
+        } catch ({response}) {
             e.target.classList.remove("disabled");
             toast.dismiss(loadingToast);
-            toast.error("Something went wrong 😕");
+            toast.error(response.data.error);
         }
     }
 

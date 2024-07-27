@@ -80,8 +80,8 @@ const CommentCard = ({ index, leftVal, commentData}) => {
             });
 
             removeCommentsCard(index+1, true);
-        } catch (error) {
-            toast.error("Something went wrong!!");
+        } catch ({response}) {
+            toast.error(response.data.error);
         }
 
         e.target.setAttribute("disabled", false);
@@ -106,8 +106,8 @@ const CommentCard = ({ index, leftVal, commentData}) => {
 
                 setPrompt({...prompt, comment: { ...pcomment, result: commentsArr }})
 
-            } catch (error) {
-                toast.error("Something went wrong!!");
+            } catch ({response}) {
+                toast.error(response.data.error);
             }
         }
     }

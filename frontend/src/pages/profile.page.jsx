@@ -56,7 +56,6 @@ const ProfilePage = () => {
           setLoading(false);
         } catch (error) {
           toast.error("Something went wrong 😕");
-          console.error(error);
         }
     };
 
@@ -81,7 +80,6 @@ const ProfilePage = () => {
 
         } catch (error) {
             toast.error("Something went wrong 😕");
-            console.error(error);
         }
     }
 
@@ -99,9 +97,8 @@ const ProfilePage = () => {
                 results: prevPrompts.results.filter(prompt => prompt.prompt_id !== promptId)
             }));
             toast.success("Prompt deleted successfully");
-        } catch (error) {
-            toast.error("Error Deleting Prompt");
-            console.log(error)
+        } catch ({response}) {
+            toast.error(response.data.error);
         }
     };
 

@@ -35,7 +35,7 @@ const Navbar = () => {
             })
             .catch(err=>{
                 toast.error("Error getting notifications");
-            })
+            });
         }
 
     }, [userAuth.authToken])

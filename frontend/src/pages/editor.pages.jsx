@@ -22,8 +22,8 @@ const EditorPage = () => {
             const prompt = result.data.prompt;
             setPrompt(prompt);
             setLoading(false);
-        } catch (error) {
-            toast.error("Something went wrong!");
+        } catch ({response}) {
+            toast.error(response.data.error);
             setLoading(false);
         }
     }

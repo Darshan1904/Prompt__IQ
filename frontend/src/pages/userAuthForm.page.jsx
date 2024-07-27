@@ -89,7 +89,7 @@ const userAuthForm = ({type}) => {
             <Toaster />
             <form className="w-[80%] max-w-[400px]" id="formElement">
                 <h1 className="text-4xl font-gelasio capitalize text-center mb-16">
-                    {type == "Sign In" ? "Welcom back!" : "Join us today"}
+                    {type == "Sign In" ? "Welcome back!" : "Join us today"}
                 </h1>
 
                 {
