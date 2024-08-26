@@ -38,7 +38,7 @@ const App = () => {
                             <Route path="search/:query" element={<SearchPage />} />
                             <Route path="user/:id" element={<ProfilePage />} />
                             <Route path="prompts/:promptId" element={<PromptPage />} />
-                            <Route path="testPrompt" element={<TestPrompt />} />
+                            {/* <Route path="testPrompt" element={<TestPrompt />} /> */}
                             <Route path="*" element={<PageNotFound />} />
                         </Route>
                     </Routes>
