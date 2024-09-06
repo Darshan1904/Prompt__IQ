@@ -8,6 +8,7 @@ import { storeInSession } from "../common/session.jsx";
 import { useContext, useState } from "react";
 import UserContext from "../context/User/userContext.jsx";
 import { authWithGoogle } from "../common/firebase.jsx";
+import Loader from "../components/loader.component.jsx";
 
 const userAuthForm = ({type}) => {
 
@@ -43,7 +44,7 @@ const userAuthForm = ({type}) => {
         }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setClicked(true);
 
@@ -57,29 +58,36 @@ const userAuthForm = ({type}) => {
 
         let {name, email, password} = formData;
 
-        if(name &&  name.length < 3){
+        if(type!=="Sign In" && (!name ||  name.length < 3)){
+            setClicked(false);
             return toast.error("Name must be at least 3 characters");
         }
-        if(password.length < 6) {
-            return toast.error("Password must be at least 6 characters");
-        }
-        
+
         if(!email.length) {
+            setClicked(false);
             return toast.error("Email is required");
         }
+
+        if(password.length < 8) {
+            setClicked(false);
+            return toast.error("Password must be at least 8 characters");
+        }
+        
 
         let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
         let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=\S+$).{8,}$/ // regex for password
 
         if(!emailRegex.test(email)) {
+            setClicked(false);
             return toast.error("Email is invalid");
         }
 
         if(!passwordRegex.test(password)) {
+            setClicked(false);
             return toast.error("Password must contain at least one number, one uppercase and lowercase letter, one special character and at least 8 or more characters and no white space.");
         }
 
-        sendData(serverRoute, formData);
+        await sendData(serverRoute, formData);
         setClicked(false);
     }
 
@@ -120,8 +128,16 @@ const userAuthForm = ({type}) => {
                     icon="fi-rr-key" 
                 />
 
-                <button className="btn-dark center mt-14" type="submit" disabled={isClicked} onClick={handleSubmit}>
-                    {type}
+                <button className={`btn-dark center mt-14 ${
+                    isClicked 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : 'hover:bg-opacity-80'
+                }`}  type="submit" disabled={isClicked} onClick={handleSubmit}>
+                    {isClicked ?
+                        <p>Loading...</p>
+                        :
+                        type
+                    }
                 </button>
 
                 <div className="relative w-full flex gap-2 my-10 uppercase opacity-10 text-black font-bold items-center">
