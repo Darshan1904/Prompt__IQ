@@ -23,13 +23,13 @@ const PublishForm = () => {
     const handleTitleChange = (e) => {
         let input = e.target;
 
-        setNewPrompt({...newPrompt, title: input.value });
+        setNewPrompt({...newPrompt, title: input.value.trim() });
     }
 
     const handleDesChange = (e) => {
         let input = e.target;
 
-        setNewPrompt({...newPrompt, des: input.value });
+        setNewPrompt({...newPrompt, des: input.value.trim() });
     }
 
     const handleKeyDown = (e) => {
@@ -63,12 +63,12 @@ const PublishForm = () => {
             return;
         }
 
-        if(!newPrompt.title.length){
+        if(!newPrompt.title.trim().length){
             toast.error("Title is required.");
             return;
         }
     
-        if(!newPrompt.des.length){
+        if(!newPrompt.des.trim().length){
             toast.error("Prompt is required.");
             return;
         }
