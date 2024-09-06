@@ -134,7 +134,7 @@ const userAuthForm = ({type}) => {
                     : 'hover:bg-opacity-80'
                 }`}  type="submit" disabled={isClicked} onClick={handleSubmit}>
                     {isClicked ?
-                        <p>Loading...</p>
+                        <>Loading...</>
                         :
                         type
                     }
