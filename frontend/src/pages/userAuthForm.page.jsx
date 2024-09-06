@@ -45,9 +45,6 @@ const userAuthForm = ({type}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(isClicked){
-            return;
-        }
         setClicked(true);
 
         let form = new FormData(formElement);
@@ -72,14 +69,14 @@ const userAuthForm = ({type}) => {
         }
 
         let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
-        let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/ // regex for password
+        let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=\S+$).{8,}$/ // regex for password
 
         if(!emailRegex.test(email)) {
             return toast.error("Email is invalid");
         }
 
         if(!passwordRegex.test(password)) {
-            return toast.error("Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters");
+            return toast.error("Password must contain at least one number, one uppercase and lowercase letter, one special character and at least 8 or more characters and no white space.");
         }
 
         try {
@@ -128,7 +125,7 @@ const userAuthForm = ({type}) => {
                     icon="fi-rr-key" 
                 />
 
-                <button className="btn-dark center mt-14" type="submit" onClick={handleSubmit}>
+                <button className="btn-dark center mt-14" type="submit" disabled={isClicked} onClick={handleSubmit}>
                     {type}
                 </button>
 
