@@ -8,7 +8,7 @@ import UserContext from "../context/User/userContext.jsx";
 const ChangePassword = () => {
 
     const changePasswordForm = useRef();
-    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=\S+$).{8,}$/;
 
     const { userAuth: {authToken} } = useContext(UserContext);
 
@@ -30,8 +30,7 @@ const ChangePassword = () => {
         }
 
         if(!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)){
-            toast.error("Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters.")
-            return;
+            return toast.error("Password must contain at least one number, one uppercase and lowercase letter, one special character and at least 8 or more characters and no white space.");
         }
 
         e.target.setAttribute("disabled", true);
