@@ -19,18 +19,23 @@ const ChangePassword = () => {
         const formData = { }
 
         for(let [key, value] of form.entries()){
-            formData[key] = value;
+            formData[key] = value.trim();
         }
 
         const { currentPassword, newPassword } = formData;
 
-        if(!currentPassword.length || !newPassword.length){
+        if(!currentPassword.trim().length || !newPassword.trim().length){
             toast.error("Fill all the input");
             return;
         }
 
         if(!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)){
             return toast.error("Password must contain at least one number, one uppercase and lowercase letter, one special character and at least 8 or more characters and no white space.");
+        }
+
+        if (currentPassword === newPassword) {
+            toast.error("New password must be different from the current password");
+            return;
         }
 
         e.target.setAttribute("disabled", true);
