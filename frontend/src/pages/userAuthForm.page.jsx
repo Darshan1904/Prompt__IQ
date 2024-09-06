@@ -5,13 +5,14 @@ import AnimationWrapper from "../common/page-animation";
 import { toast, Toaster } from 'react-hot-toast';
 import axios from "../axios.js";
 import { storeInSession } from "../common/session.jsx";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import UserContext from "../context/User/userContext.jsx";
 import { authWithGoogle } from "../common/firebase.jsx";
 
 const userAuthForm = ({type}) => {
 
     let serverRoute = type == "Sign In" ? "/signin" : "/signup";
+    const [isClicked, setClicked] = useState(false)
     let {userAuth: {authToken}, setUserAuth} = useContext(UserContext);
 
     const sendData = async (serverRoute, formData) => {
@@ -44,6 +45,10 @@ const userAuthForm = ({type}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if(isClicked){
+            return;
+        }
+        setClicked(true);
 
         let form = new FormData(formElement);
 
@@ -77,7 +82,13 @@ const userAuthForm = ({type}) => {
             return toast.error("Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters");
         }
 
-        sendData(serverRoute, formData);
+        try {
+            sendData(serverRoute, formData);
+        } catch (error) {
+            toast.error("Something went wrong!!")
+        } finally {
+            setClicked(false);
+        }
     }
 
     return (
