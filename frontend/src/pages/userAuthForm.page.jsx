@@ -79,13 +79,8 @@ const userAuthForm = ({type}) => {
             return toast.error("Password must contain at least one number, one uppercase and lowercase letter, one special character and at least 8 or more characters and no white space.");
         }
 
-        try {
-            sendData(serverRoute, formData);
-        } catch (error) {
-            toast.error("Something went wrong!!")
-        } finally {
-            setClicked(false);
-        }
+        sendData(serverRoute, formData);
+        setClicked(false);
     }
 
     return (
