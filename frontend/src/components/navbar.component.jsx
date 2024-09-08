@@ -69,6 +69,11 @@ const Navbar = () => {
                         <p>Write</p>
                     </Link>
 
+                    <Link to="/beginners-guide" className='hidden md:flex gap-2 link'>
+                        <i className="fi fi-rr-book"></i>
+                        <p>Guide</p>
+                    </Link>
+
                     {
                         userAuth.authToken ?
                         <>

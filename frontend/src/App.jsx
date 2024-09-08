@@ -15,6 +15,7 @@ import ChangePassword from "./pages/change-password.page";
 import EditProfile from "./pages/edit-profile.page";
 import TestPrompt from "./components/testprompt.component";
 import Notifications from "./pages/notifications.page";
+import BeginnersGuide from "./components/beginners-guide.component";
 
 const App = () => {
     return (
@@ -33,6 +34,7 @@ const App = () => {
                                 <Route path="editProfile" element={<EditProfile />} />
                                 <Route path="changePassword" element={<ChangePassword />} />
                             </Route>
+                            <Route path="/beginners-guide" element={<BeginnersGuide />} />
                             <Route path="signin" element={<UserAuthForm type="Sign In" />} />
                             <Route path="signup" element={<UserAuthForm type="Sign Up" />} />
                             <Route path="search/:query" element={<SearchPage />} />

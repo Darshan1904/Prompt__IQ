@@ -17,7 +17,7 @@ const HomePage = () => {
     const [trendingPrompts, setTrendingPrompts] = useState(null);
     const [pageState, setPageState] = useState("home");
 
-    let categories = ["programming", "chatgpt", "gemini", "tech", "content creation", "story writing", "art", "music",  "marketing", "investing", "fitness", "education"]
+    let categories = ["programming", "chatgpt", "gemini", "tech", "story writing", "education", "music", "content creation",  "marketing", "investing", "fitness", "art"]
 
     const fetchLatestPrompts = async ({ page = 1 }) => {
         try {
@@ -155,6 +155,16 @@ const HomePage = () => {
                                     })
                                 }
                         </div>
+                        
+                        <a href="https://www.producthunt.com/posts/prompt-iq?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-prompt-iq" target="_blank" rel="noopener noreferrer">
+                            <img
+                                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=487158&theme=neutral"
+                                alt="Prompt IQ - A platform to share and explore creative writing prompts | Product Hunt"
+                                style={{ width: '250px', height: '54px' }}
+                                width="250"
+                                height="54"
+                            />
+                        </a>
                     </div>
                 </div>
             </section>
