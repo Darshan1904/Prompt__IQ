@@ -63,15 +63,15 @@ const Navbar = () => {
                     onClick={() => {setSearchBoxVisibility(currentVal => !currentVal);}} >
                         <i className="fi fi-rr-search text-x1"></i>
                     </button>
+                    
+                    <Link to="/beginners-guide" className='hidden md:flex gap-2 link'>
+                        <i className="fi fi-rr-book"></i>
+                        <p>Guide</p>
+                    </Link>
 
                     <Link to="/editor" className='hidden md:flex gap-2 link'>
                         <i className="fi fi-rr-file-edit"></i>
                         <p>Write</p>
-                    </Link>
-
-                    <Link to="/beginners-guide" className='hidden md:flex gap-2 link'>
-                        <i className="fi fi-rr-book"></i>
-                        <p>Guide</p>
                     </Link>
 
                     {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const BeginnersGuide = () => {
   return (
@@ -36,9 +37,9 @@ const BeginnersGuide = () => {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">4. Free Resources for Learning Prompt Writing</h2>
         <ul className="list-disc ml-6 space-y-2">
-          <li><a href="https://youtu.be/_ZvnD73m40o?si=YVXAniOH0_Rco6yZ" className="text-blue-600 hover:underline">Intro to Prompt Engineering - YouTube</a></li>
-          <li><a href="https://learnprompting.org" className="text-blue-600 hover:underline">LearnPrompting.org</a></li>
-          <li><a href="https://github.com/dair-ai/Prompt-Engineering-Guide" className="text-blue-600 hover:underline">Prompt Engineering Guide</a></li>
+          <li><Link to="https://youtu.be/_ZvnD73m40o?si=YVXAniOH0_Rco6yZ" target="_blank" className="text-blue-600 underline">Intro to Prompt Engineering - YouTube <i className='fi fi-rr-link text-sm'></i></Link></li>
+          <li><Link to="https://learnprompting.org" className="text-blue-600 underline" target="_blank">LearnPrompting.org <i className='fi fi-rr-link text-sm'></i></Link></li>
+          <li><Link to="https://github.com/dair-ai/Prompt-Engineering-Guide" target="_blank" className="text-blue-600 underline">Prompt Engineering Guide <i className='fi fi-rr-link text-sm'></i></Link></li>
         </ul>
       </section>
 
@@ -62,12 +63,12 @@ const BeginnersGuide = () => {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">7. Still Need Help?</h2>
         <p>
-          Check out our <strong>Prompt Templates</strong> (coming soon) for ready-to-use examples, or join <strong>Prompt IQ</strong> to ask questions and learn from others.
+          Check out our <strong>Prompt Templates</strong> (coming soon) for ready-to-use examples, and join <strong>Prompt IQ</strong> to ask questions and learn from others.
         </p>
       </section>
 
       <p className="text-center">
-        Ready to practice? Head back to <a href="/" className="hover:underline">Prompt IQ</a> and start crafting your prompts!
+        Ready to practice? Head back to <Link to="/" className="hover:underline">Prompt IQ</Link> and start crafting your prompts!
       </p>
     </div>
   );

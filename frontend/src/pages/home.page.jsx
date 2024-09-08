@@ -10,6 +10,7 @@ import { activeTab } from "../components/inpage-navigation.component";
 import NoData from "../components/nodata.component.jsx";
 import { filterPaginationData } from "../common/filter-pagination-data.jsx";
 import LoadMoreData from "../components/load-more.component.jsx";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
 
@@ -156,7 +157,7 @@ const HomePage = () => {
                                 }
                         </div>
                         
-                        <a href="https://www.producthunt.com/posts/prompt-iq?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-prompt-iq" target="_blank" rel="noopener noreferrer">
+                        <Link to="https://www.producthunt.com/posts/prompt-iq?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-prompt-iq" target="_blank" rel="noopener noreferrer">
                             <img
                                 src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=487158&theme=neutral"
                                 alt="Prompt IQ - A platform to share and explore creative writing prompts | Product Hunt"
@@ -164,7 +165,7 @@ const HomePage = () => {
                                 width="250"
                                 height="54"
                             />
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
