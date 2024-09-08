@@ -70,11 +70,11 @@ const PromptInteraction = () => {
                             </button>
                             <p className="text-xl text-dark-grey">{total_comments}</p>
 
-                            <button className="w-10 h-10 rounded-full flex items-center justify-center bg-grey/80" onClick={() => {
+                            <button className="w-max h-10 px-4 rounded-full flex items-center justify-center gap-2 bg-grey/80" onClick={() => {
                                 navigator.clipboard.writeText(des); 
                                 toast.success("Copied to clipboard")
                             }}>
-                                <i className='fi fi-rr-copy'/> 
+                                <i className='fi fi-rr-copy'/> copy
                             </button>
                        
                     </div>
